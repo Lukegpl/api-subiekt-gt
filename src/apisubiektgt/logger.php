@@ -16,8 +16,8 @@ class Logger {
 		return self::$_instance;
 	}
 
-	public function log($type,$message,$class,$method,$line){
-		$line = date("Y-m-d H:i:s"). " Line: {$line} $class->$method(): $message\n";		
+	public function log($type,$message,$source,$line){
+		$line = date("Y-m-d H:i:s"). " Line: {$line}, {$source}: $message\n";		
 		file_put_contents("{$this->log_path}{$type}.log",$line,FILE_APPEND);
 	}
 }

@@ -31,7 +31,7 @@ class Config{
 				$this->{$key} = $value;
 			}
 		}catch(Exception $e){
-			Logger::getInstance()->log('error',$e->getMessage(),__CLASS__,__FUNCTION__,__LINE__);
+			Logger::getInstance()->log('error',$e->getMessage(),__CLASS__.'->'.__FUNCTION__,__LINE__);
 			return 0;
 		}		
 		return 1;

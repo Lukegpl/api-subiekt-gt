@@ -1,2 +1,2 @@
 # api-subiekt-gt
-Bramka API przyjmowania obsługi zamówień.
+Bramka API przyjmowania i obsługi zamówień dla SubiektGT + Sfera GT
