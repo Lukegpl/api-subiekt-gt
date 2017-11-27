@@ -4,6 +4,7 @@ use APISubiektGT\Helper;
 use APISubiektGT\Logger;
 use APISubiektGT\SubiektGT;
 
+
 require_once(dirname(__FILE__).'/../init.php');
 
 $json_response = array();
@@ -20,8 +21,11 @@ if(isset($header['Accept']) && false !== strpos($header['Accept'],'application/j
 
 		//Create instance of Subiekt process and connect to it
 		$subiektGt = SubiektGT::getInstance($cfg);
-		$subiektGt->connect();
 		
+		if(!isset($json_request['api_key'])){
+			throw new Exception('Nie podano klucza API=>api_key',1);
+		}
+		$subiektGt->connect();		
 		$subiektGt->addOrder($json_request);
 
 		$json_response['status'] = 'success';	

@@ -9,10 +9,11 @@ class SubiektGT {
 	static protected $_instance;
 	protected $cfg;
 	protected $subiektGt;
+	protected $api_key = false;
 
 	public function __construct(Config $cfg){
 		$this->cfg = $cfg;
-
+		$this->api_key = $cfg->getAPIKey();
 	}
 
 
@@ -37,7 +38,7 @@ class SubiektGT {
 		$gt->Uzytkownik = $this->cfg->getDbUser();
 		$gt->UzytkownikHaslo = $gtD->Szyfruj($this->cfg->getDbUserPass());
 		$gt->Baza = $this->cfg->getDatabase();
- 
+ 	
 		 $this->subiektGt = $gt->Uruchom(0,4);
 		 return $this->subiektGt;
 	}

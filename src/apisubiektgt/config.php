@@ -9,6 +9,7 @@ class Config{
 	protected $dbpassword;
 	protected $database;
 	protected $_ini_file;
+	protected $api_key;
 
 
 	/**
@@ -35,6 +36,11 @@ class Config{
 			return 0;
 		}		
 		return 1;
+	}
+
+
+	public function getAPIKey(){
+		return $this->api_key;
 	}
 
 	/**
