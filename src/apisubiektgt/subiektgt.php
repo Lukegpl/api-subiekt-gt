@@ -37,8 +37,6 @@ class SubiektGT {
 		$gt->Uzytkownik = $this->cfg->getDbUser();
 		$gt->UzytkownikHaslo = $gtD->Szyfruj($this->cfg->getDbUserPass());
 		$gt->Baza = $this->cfg->getDatabase();
-		//$gt->Operator = "Szef";
-		//$gt->OperatorHaslo = $gtD->Szyfruj("luke123");
  
 		 $this->subiektGt = $gt->Uruchom(0,4);
 		 return $this->subiektGt;

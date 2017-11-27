@@ -1,11 +1,10 @@
 <?php
 namespace APISubiektGT\SubiektGT;
+use APISubiektGT\SubiektGT\SubiektObj;
 use COM;
 
-class Customer {	
-	protected $customerGt = false;
-	protected $is_exists = false;
-	protected $subiektGt;
+class Customer extends SubiektObj{	
+	protected $customerGt = false;	
 	protected $email;
 	protected $ref_id;
 	protected $firstname;
@@ -18,13 +17,12 @@ class Customer {
 	protected $address_no;
 	protected $phone = false;
 	protected $is_company = false;
-	protected $exclude = array('customerGt','subiektGt','exclude');
+	
 
 
-	public function __construct($subiektGt,$customerDetail = array()){				
-		foreach($customerDetail as $key=>$value){
-			$this->{$key} = mb_convert_encoding($value,'ISO-8859-2');
-		}
+	public function __construct($subiektGt,$customerDetail = array()){						
+		parent::__construct($subiektGt, $customerDetail);
+		$this->excludeAttr('customerGt');
 
 		if(isset($customerDetail['ref_id'])){
 			$symbol = trim($customerDetail['ref_id']);
@@ -34,7 +32,7 @@ class Customer {
 			$this->getGtObject();
 			$this->is_exists = true;			
 		}
-		$this->subiektGt = $subiektGt;		
+			
 	}
 
 	protected function setGtObject(){
@@ -88,10 +86,6 @@ class Customer {
 		}								
 	}
 
-	public function isExists(){
-		return $this->is_exists;
-	}
-
 	public function add(){
 		$this->customerGt = $this->subiektGt->Kontrahenci->Dodaj();
 		$this->setGtObject();		
@@ -105,17 +99,6 @@ class Customer {
 
 	public function getGt(){
 		return $this->customerGt;
-	}
-
-	public function get(){
-		$ret_data = array();
-		foreach ($this as $key => $value) {
-			if(in_array($key,$this->exclude)){
-				continue;
-			}
-			$ret_data[$key] = mb_convert_encoding($value,'UTF-8','ISO-8859-2');
-		}
-		return $ret_data;
 	}
 
 }
