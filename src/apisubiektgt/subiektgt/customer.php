@@ -36,7 +36,7 @@ class Customer extends SubiektObj{
 	}
 
 	protected function setGtObject(){
-		$this->customerGt->Symbol = $this->ref_id;
+		$this->customerGt->Symbol = $this->ref_id;		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
 			$this->customerGt->Nazwa = substr($this->company_name,0,100);
@@ -69,6 +69,7 @@ class Customer extends SubiektObj{
 	}
 
 	protected function getGtObject(){
+		$this->gt_id = $this->customerGt->Identyfikator;
 		$this->ref_id = $this->customerGt->Symbol;		
 		$this->company_name = $this->customerGt->NazwaPelna;
 		$this->tax_id = $this->customerGt->NIP;

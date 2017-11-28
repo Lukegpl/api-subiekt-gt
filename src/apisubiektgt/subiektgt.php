@@ -3,6 +3,7 @@ namespace APISubiektGT;
 use APISubiektGT\Config;
 use APISubiektGT\Logger;
 use APISubiektGT\SubiektGT\Order;
+use APISubiektGT\MSSql;
 use COM;
 
 class SubiektGT {
@@ -26,9 +27,14 @@ class SubiektGT {
 
 
 	/**
-	*	create com Object
+	*	create com Object and conncet to database.
 	*/
 	public function connect(){
+		$mssqlConnectionInfo = array("UID" => $this->cfg->getDbUser(), 
+						  "PWD" => $this->cfg->getDbUserPass(),
+						  "Database"=>$this->cfg->getDatabase()); 
+		MSSql::getInstance($mssqlConnectionInfo,$this->cfg->getServer());
+
 		$gt = new COM("InsERT.GT") or die("Cannot create an InsERT GT object");
 		$gtD = new COM("InsERT.Dodatki") or die("Cannot create an Insert Dodatki object");
 
@@ -47,7 +53,7 @@ class SubiektGT {
 	public function addOrder($data){
 		//$order = new Order($this->subiektGt, $data['data']);
 		$order = new Order($this->subiektGt, $data['data']);		
-	
+		$order->add();
 		//var_Dump($sDoc->Liczba);
 		//$doc = $this->subiektGt->Dokumenty->Wczytaj("FZ 2607/MAG/10/2017");
 		//var_dump($doc->KontrahentId());
