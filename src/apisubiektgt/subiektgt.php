@@ -2,17 +2,18 @@
 namespace APISubiektGT;
 use APISubiektGT\Config;
 use APISubiektGT\Logger;
-use APISubiektGT\SubiektGT\Order;
+use APISubiektGT\MSSql;
 use COM;
 
 class SubiektGT {
 	static protected $_instance;
 	protected $cfg;
 	protected $subiektGt;
+	protected $api_key = false;
 
 	public function __construct(Config $cfg){
 		$this->cfg = $cfg;
-
+		$this->api_key = $cfg->getAPIKey();
 	}
 
 
@@ -25,9 +26,14 @@ class SubiektGT {
 
 
 	/**
-	*	create com Object
+	*	create com Object and conncet to database.
 	*/
 	public function connect(){
+		$mssqlConnectionInfo = array("UID" => $this->cfg->getDbUser(), 
+						  "PWD" => $this->cfg->getDbUserPass(),
+						  "Database"=>$this->cfg->getDatabase()); 
+		MSSql::getInstance($mssqlConnectionInfo,$this->cfg->getServer());
+
 		$gt = new COM("InsERT.GT") or die("Cannot create an InsERT GT object");
 		$gtD = new COM("InsERT.Dodatki") or die("Cannot create an Insert Dodatki object");
 
@@ -37,22 +43,9 @@ class SubiektGT {
 		$gt->Uzytkownik = $this->cfg->getDbUser();
 		$gt->UzytkownikHaslo = $gtD->Szyfruj($this->cfg->getDbUserPass());
 		$gt->Baza = $this->cfg->getDatabase();
-		//$gt->Operator = "Szef";
-		//$gt->OperatorHaslo = $gtD->Szyfruj("luke123");
- 
+ 	
 		 $this->subiektGt = $gt->Uruchom(0,4);
 		 return $this->subiektGt;
-	}
-
-
-	public function addOrder($data){
-		//$order = new Order($this->subiektGt, $data['data']);
-		$order = new Order($this->subiektGt, $data['data']);		
-	
-		//var_Dump($sDoc->Liczba);
-		//$doc = $this->subiektGt->Dokumenty->Wczytaj("FZ 2607/MAG/10/2017");
-		//var_dump($doc->KontrahentId());
-
 	}
 
 }

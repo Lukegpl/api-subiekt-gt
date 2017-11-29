@@ -1,11 +1,11 @@
 <?php
 namespace APISubiektGT\SubiektGT;
+use APISubiektGT\SubiektGT\SubiektObj;
+use APISubiektGT\SubiektGT as SubiektGT;
 use COM;
 
-class Customer {	
-	protected $customerGt = false;
-	protected $is_exists = false;
-	protected $subiektGt;
+class Customer extends SubiektObj{	
+	protected $customerGt = false;	
 	protected $email;
 	protected $ref_id;
 	protected $firstname;
@@ -18,27 +18,26 @@ class Customer {
 	protected $address_no;
 	protected $phone = false;
 	protected $is_company = false;
-	protected $exclude = array('customerGt','subiektGt','exclude');
+	
 
 
-	public function __construct($subiektGt,$customerDetail = array()){				
-		foreach($customerDetail as $key=>$value){
-			$this->{$key} = mb_convert_encoding($value,'ISO-8859-2');
-		}
+	public function __construct($subiektGt,$customerDetail = array()){						
+		parent::__construct($subiektGt, $customerDetail);
+		$this->excludeAttr('customerGt');
 
+		$symbol = '';
 		if(isset($customerDetail['ref_id'])){
 			$symbol = trim($customerDetail['ref_id']);
 		}
-		if($subiektGt->Kontrahenci->Istnieje($symbol)){
+		if($symbol!='' && $subiektGt->Kontrahenci->Istnieje($symbol)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($symbol);
 			$this->getGtObject();
 			$this->is_exists = true;			
-		}
-		$this->subiektGt = $subiektGt;		
+		}			
 	}
 
 	protected function setGtObject(){
-		$this->customerGt->Symbol = $this->ref_id;
+		$this->customerGt->Symbol = $this->ref_id;		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
 			$this->customerGt->Nazwa = substr($this->company_name,0,100);
@@ -68,9 +67,11 @@ class Customer {
 			$phoneGt->Numer = $this->phone;
 			$phoneGt->Typ = 3;
 		}
+		return true;
 	}
 
 	protected function getGtObject(){
+		$this->gt_id = $this->customerGt->Identyfikator;
 		$this->ref_id = $this->customerGt->Symbol;		
 		$this->company_name = $this->customerGt->NazwaPelna;
 		$this->tax_id = $this->customerGt->NIP;
@@ -85,11 +86,8 @@ class Customer {
 		if($this->customerGt->Telefony->Liczba>0){
 			$phoneGt = $this->customerGt->Telefony->Element(1);
 			$this->phone = $phoneGt->Numer;
-		}								
-	}
-
-	public function isExists(){
-		return $this->is_exists;
+		}	
+		return true;							
 	}
 
 	public function add(){
@@ -99,23 +97,16 @@ class Customer {
 	}
 
 	public function update() {
+		if(!$this->customerGt){
+			return false;
+		}
 		$this->setGtObject();
 		$this->customerGt->Zapisz();	
+		return true;
 	}
 
 	public function getGt(){
 		return $this->customerGt;
-	}
-
-	public function get(){
-		$ret_data = array();
-		foreach ($this as $key => $value) {
-			if(in_array($key,$this->exclude)){
-				continue;
-			}
-			$ret_data[$key] = mb_convert_encoding($value,'UTF-8','ISO-8859-2');
-		}
-		return $ret_data;
 	}
 
 }
