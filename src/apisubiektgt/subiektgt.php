@@ -48,5 +48,12 @@ class SubiektGT {
 		 return $this->subiektGt;
 	}
 
+	/**
+	*	Return config object
+	*/
+	public function getConfig(){
+		return $this->cfg;
+	}
+
 }
 ?>

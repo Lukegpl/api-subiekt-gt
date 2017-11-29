@@ -7,9 +7,10 @@ class Config{
 	protected $server;
 	protected $dbuser;
 	protected $dbpassword;
-	protected $database;
+	protected $database;	
 	protected $_ini_file;
 	protected $api_key;
+	protected $new_product_prefix = '';
 
 
 	/**
@@ -70,6 +71,15 @@ class Config{
 	public function getDbUserPass(){
 		return $this->dbpassword;
 	}
+
+
+	/**
+	*	Get prefic for new product name
+	*/
+	public function getNewProductPrefix(){
+		return $this->new_product_prefix;
+	}
+
 
 	public function save(){
 
