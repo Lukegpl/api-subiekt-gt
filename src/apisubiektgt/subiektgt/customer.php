@@ -1,6 +1,7 @@
 <?php
 namespace APISubiektGT\SubiektGT;
 use APISubiektGT\SubiektGT\SubiektObj;
+use APISubiektGT\SubiektGT as SubiektGT;
 use COM;
 
 class Customer extends SubiektObj{	
@@ -24,15 +25,15 @@ class Customer extends SubiektObj{
 		parent::__construct($subiektGt, $customerDetail);
 		$this->excludeAttr('customerGt');
 
+		$symbol = '';
 		if(isset($customerDetail['ref_id'])){
 			$symbol = trim($customerDetail['ref_id']);
 		}
-		if($subiektGt->Kontrahenci->Istnieje($symbol)){
+		if($symbol!='' && $subiektGt->Kontrahenci->Istnieje($symbol)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($symbol);
 			$this->getGtObject();
 			$this->is_exists = true;			
-		}
-			
+		}			
 	}
 
 	protected function setGtObject(){
@@ -66,6 +67,7 @@ class Customer extends SubiektObj{
 			$phoneGt->Numer = $this->phone;
 			$phoneGt->Typ = 3;
 		}
+		return true;
 	}
 
 	protected function getGtObject(){
@@ -84,7 +86,8 @@ class Customer extends SubiektObj{
 		if($this->customerGt->Telefony->Liczba>0){
 			$phoneGt = $this->customerGt->Telefony->Element(1);
 			$this->phone = $phoneGt->Numer;
-		}								
+		}	
+		return true;							
 	}
 
 	public function add(){
@@ -94,8 +97,12 @@ class Customer extends SubiektObj{
 	}
 
 	public function update() {
+		if(!$this->customerGt){
+			return false;
+		}
 		$this->setGtObject();
 		$this->customerGt->Zapisz();	
+		return true;
 	}
 
 	public function getGt(){

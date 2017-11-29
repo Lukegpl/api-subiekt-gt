@@ -3,6 +3,7 @@ namespace APISubiektGT\SubiektGT;
 use COM;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
+use APISubiektGT\SubiektGT as SubiektGT;
 
 class Product extends SubiektObj{
 
@@ -10,8 +11,7 @@ class Product extends SubiektObj{
 	protected $ean;
 	protected $code;
 	protected $price;
-	protected $name;
-	protected $price_before_discount;
+	protected $name;	
 	protected $qty;	
 	protected $id_mag = 0;
 
@@ -19,18 +19,24 @@ class Product extends SubiektObj{
 		parent::__construct($subiektGt, $productDetail);
 		$this->excludeAttr('productGt');
 		
+		$symbol = '';
 		if(isset($productDetail['code'])){
 			$symbol = trim($productDetail['code']);
 		}
-		if($subiektGt->Towary->Istnieje($symbol)){
+		if($symbol!='' &&  $subiektGt->Towary->Istnieje($symbol)){
 			$this->productGt = $subiektGt->Towary->Wczytaj($symbol);
 			$this->getGtObject();
 			$this->is_exists = true;			
 		}		
 	}
 
-	protected function setGtObject(){
-
+	protected function setGtObject(){				
+		$this->productGt->Nazwa = $this->name;
+		$this->productGt->Symbol = $this->code;
+		$this->productGt->Aktywny = true;
+		$this->CenaKartotekowa = $this->price;
+		$this->productGt->KodyKreskowe->Dodaj($this->ean);
+		return true;
 	}
 
 	protected function getGtObject(){
@@ -42,11 +48,11 @@ class Product extends SubiektObj{
 		}
 		if($this->productGt->Ceny->Liczba>0){
 			$prices = $this->productGt->Ceny->Element(1);
-			$this->price = floatval($prices->Brutto);
-			$this->price_before_discount = $this->price;
+			$this->price = floatval($prices->Brutto);			
 		}
 		$qty = $this->getQty();
 		$this->qty = intval($qty['Dostepne']);
+		return true;
 	}
 
 	protected function getQty(){
@@ -55,12 +61,21 @@ class Product extends SubiektObj{
 		return $data[0];
 	}
 
-
 	public function add(){
+		$this->productGt = $this->subiektGt->TowaryManager->DodajTowar();
+		$this->setGtObject();
+		$this->productGt->PrzeliczCenyWgCenyKartotekowej();
+		$this->productGt->Zapisz();
+		return true;
 	}
 
 	public function update(){
-
+		if(!$this->productGt){
+			return false;
+		}
+		$this->setGtObject();
+		$this->productGt->Zapisz();
+		return true;
 	}
 
 	public function getGt(){

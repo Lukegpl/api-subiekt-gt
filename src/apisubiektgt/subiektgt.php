@@ -2,7 +2,6 @@
 namespace APISubiektGT;
 use APISubiektGT\Config;
 use APISubiektGT\Logger;
-use APISubiektGT\SubiektGT\Order;
 use APISubiektGT\MSSql;
 use COM;
 
@@ -47,17 +46,6 @@ class SubiektGT {
  	
 		 $this->subiektGt = $gt->Uruchom(0,4);
 		 return $this->subiektGt;
-	}
-
-
-	public function addOrder($data){
-		//$order = new Order($this->subiektGt, $data['data']);
-		$order = new Order($this->subiektGt, $data['data']);		
-		$order->add();
-		//var_Dump($sDoc->Liczba);
-		//$doc = $this->subiektGt->Dokumenty->Wczytaj("FZ 2607/MAG/10/2017");
-		//var_dump($doc->KontrahentId());
-
 	}
 
 }

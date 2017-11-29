@@ -1,6 +1,8 @@
 <?php
 namespace APISubiektGT\SubiektGT;
 
+use APISubiektGT\SubiektGT as SubiektGT;
+
 abstract class SubiektObj{
 
 	protected $subiektGt = false;
@@ -10,7 +12,7 @@ abstract class SubiektObj{
 							'exclude_attibs',
 							'is_exists');	
 
-	public function __construct($subiektGt, $objDetail){
+	public function __construct($subiektGt, $objDetail = array()){
 		foreach($objDetail as $key=>$value){
 			if(!is_array($value) && is_string($value)){
 				$this->{$key} = mb_convert_encoding($value,'ISO-8859-2');
