@@ -46,6 +46,9 @@ class Product extends SubiektObj{
 	}
 
 	protected function getGtObject(){
+		if(!$this->productGt){
+			return false;
+		}
 		$this->gt_id = $this->productGt->Identyfikator;
 		$this->name = $this->productGt->Nazwa;		
 		$this->code = $this->productGt->Symbol;

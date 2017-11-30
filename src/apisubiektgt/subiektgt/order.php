@@ -16,8 +16,10 @@ class Order extends SubiektObj {
 	protected $customer = false;
 	protected $reservation = true;
 	protected $order_ref = '';
-	protected $amount = 0;
+	protected $selling_doc = '';
+	protected $amount = 0;	
 	protected $state = -1;
+	protected $date_of_delivery = '';
 	protected $pay_type = 'transfer';
 	protected $create_product_if_not_exists = false;
 	protected $orderDetail= array();
@@ -80,25 +82,36 @@ class Order extends SubiektObj {
 		return false;
 	}
 
-	protected function getGtObject(){		
+	protected function getGtObject(){	
+		if(!$this->orderGt){
+			return false;
+		}
 		$this->gt_id = $this->orderGt->Identyfikator;
 		$o = $this->getOrderById($this->gt_id);
 		
 		$this->reference =  $o['dok_NrPelnyOryg'];
+		$this->selling_doc = $o['pow_NrPelny'];
 		$this->comments = $o['dok_Uwagi'];
 		$this->order_ref = $o['dok_NrPelny'];
 		$this->reservation = $o['statusrez'];	
 		$this->state = $o['dok_Status'];				
 		$this->amount = $o['dok_WartBrutto'];
+		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		
 		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);
 		$this->customer = $customer;
-		$products = $this->getPositionsByOrderId($this->gt_id);
-		foreach($products as $p){
+		$positions = array();
+		for($i=1; $i<=$this->orderGt->Pozycje->Liczba(); $i++){
+			$positions[$this->orderGt->Pozycje->Element($i)->Id]['name'] = $this->orderGt->Pozycje->Element($i)->TowarNazwa;
+			$positions[$this->orderGt->Pozycje->Element($i)->Id]['code'] = $this->orderGt->Pozycje->Element($i)->TowarSymbol;
+		}
 		
-			$p_a = array('name'=>$p['tw_Nazwa'],
-					   'code'=>$p['tw_Symbol'],
-					   'qty'=>$p['ob_IloscMag'],
+
+		$products = $this->getPositionsByOrderId($this->gt_id);
+		foreach($products as $p){			
+			$p_a = array('name'=> $positions[$p['ob_Id']]['name'],
+					   'code'=> $positions[$p['ob_Id']]['code'],
+					   'qty'=>$p['ob_Ilosc'],
 					   'price'=>$p['ob_WartBrutto']);
 			$this->products[] = $p_a;
 		}
@@ -112,9 +125,8 @@ class Order extends SubiektObj {
 	}
 
 	protected function getPositionsByOrderId($id){
-		$sql = "SELECT d.*,t.tw_Nazwa, t.tw_Symbol FROM vwDokumenty as d
-  			INNER  JOIN vwTowarLista as t ON tw_id = ob_towid
-			WHERE dok_Id = {$id}";		
+		$sql = "SELECT * FROM dok_Pozycja
+			   WHERE ob_DokHanId = {$id}";		
 		$data = MSSql::getInstance()->query($sql);
 		return $data;
 	}

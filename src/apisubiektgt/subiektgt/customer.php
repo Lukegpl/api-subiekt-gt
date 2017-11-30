@@ -73,6 +73,9 @@ class Customer extends SubiektObj{
 	}
 
 	protected function getGtObject(){
+		if(!$this->customerGt){
+			return false;
+		}
 		$this->gt_id = $this->customerGt->Identyfikator;
 		$this->ref_id = $this->customerGt->Symbol;		
 		$this->company_name = $this->customerGt->NazwaPelna;
