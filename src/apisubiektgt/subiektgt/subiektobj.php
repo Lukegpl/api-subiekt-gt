@@ -25,7 +25,11 @@ abstract class SubiektObj{
 	
 
 	protected function excludeAttr($name){
-		$this->exclude_attibs = array_merge($this->exclude_attibs,array($name));
+		if(is_array($name)){
+			$this->exclude_attibs = array_merge($this->exclude_attibs,$name);
+		}else{
+			$this->exclude_attibs = array_merge($this->exclude_attibs,array($name));
+		}
 	}
 
 	abstract protected function setGtObject();
@@ -45,13 +49,28 @@ abstract class SubiektObj{
 			if(in_array($key,$this->exclude_attibs)){
 				continue;
 			}
-			if(is_string($value)){
+			$ret_data[$key] = self::toUtf8($value);
+			/*if(is_string($value)){
 				$ret_data[$key] = mb_convert_encoding($value,'UTF-8','ISO-8859-2');
 			}else{
 				$ret_data[$key] = $value;
-			}
-		}
+			}*/
+		}	
 		return $ret_data;
+	}
+
+	protected function toUtf8($value){
+		if(is_object($value)){
+			return $value;
+		}
+		if(!is_array($value)){
+			return mb_convert_encoding($value,'UTF-8','ISO-8859-2');
+		}
+
+		foreach($value as $key => $v){
+			$value[$key] = self::toUtf8($v);
+		}
+		return $value;
 	}
 	
 }

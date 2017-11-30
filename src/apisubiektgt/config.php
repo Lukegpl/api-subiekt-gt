@@ -7,9 +7,10 @@ class Config{
 	protected $server;
 	protected $dbuser;
 	protected $dbpassword;
-	protected $database;
+	protected $database;	
 	protected $_ini_file;
 	protected $api_key;
+	protected $new_product_prefix = '';
 
 
 	/**
@@ -32,7 +33,7 @@ class Config{
 				$this->{$key} = str_replace(';', '', $value);
 			}
 		}catch(Exception $e){
-			Logger::getInstance()->log('error',$e->getMessage(),__CLASS__.'->'.__FUNCTION__,__LINE__);
+			Logger::getInstance()->log('api_error',$e->getMessage(),__CLASS__.'->'.__FUNCTION__,__LINE__);
 			return 0;
 		}		
 		return 1;
@@ -70,6 +71,15 @@ class Config{
 	public function getDbUserPass(){
 		return $this->dbpassword;
 	}
+
+
+	/**
+	*	Get prefic for new product name
+	*/
+	public function getNewProductPrefix(){
+		return $this->new_product_prefix;
+	}
+
 
 	public function save(){
 

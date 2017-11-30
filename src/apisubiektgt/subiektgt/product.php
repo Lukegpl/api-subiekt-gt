@@ -3,7 +3,6 @@ namespace APISubiektGT\SubiektGT;
 use COM;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
-use APISubiektGT\SubiektGT as SubiektGT;
 
 class Product extends SubiektObj{
 
@@ -24,14 +23,21 @@ class Product extends SubiektObj{
 			$symbol = trim($productDetail['code']);
 		}
 		if($symbol!='' &&  $subiektGt->Towary->Istnieje($symbol)){
-			$this->productGt = $subiektGt->Towary->Wczytaj($symbol);
-			$this->getGtObject();
+			$this->productGt = $subiektGt->Towary->Wczytaj($symbol);			
 			$this->is_exists = true;			
+			$this->getGtObject();
 		}		
 	}
 
 	protected function setGtObject(){				
-		$this->productGt->Nazwa = $this->name;
+		if(!$this->is_exists){
+			$new_prefix = SubiektGT::getInstance()->getConfig()->getNewProductPrefix();
+			if(strlen($new_prefix)>0){
+				$this->productGt->Nazwa = "{$new_prefix} {$this->name}";
+			}
+		}else{
+			$this->productGt->Nazwa = $this->name;
+		}
 		$this->productGt->Symbol = $this->code;
 		$this->productGt->Aktywny = true;
 		$this->CenaKartotekowa = $this->price;
@@ -40,8 +46,11 @@ class Product extends SubiektObj{
 	}
 
 	protected function getGtObject(){
+		if(!$this->productGt){
+			return false;
+		}
 		$this->gt_id = $this->productGt->Identyfikator;
-		$this->name = $this->productGt->Nazwa;
+		$this->name = $this->productGt->Nazwa;		
 		$this->code = $this->productGt->Symbol;
 		if($this->productGt->KodyKreskowe->Liczba>0){
 			$this->ean = $this->productGt->KodyKreskowe->Element(1);
