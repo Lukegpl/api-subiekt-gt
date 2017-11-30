@@ -1,8 +1,10 @@
 <?php
 namespace APISubiektGT\SubiektGT;
-use APISubiektGT\SubiektGT\SubiektObj;
-use APISubiektGT\SubiektGT as SubiektGT;
+
 use COM;
+use APISubiektGT\MSSql;
+use APISubiektGT\SubiektGT\SubiektObj;
+
 
 class Customer extends SubiektObj{	
 	protected $customerGt = false;	
@@ -88,6 +90,29 @@ class Customer extends SubiektObj{
 			$this->phone = $phoneGt->Numer;
 		}	
 		return true;							
+	}
+
+	static public function getCustomerById($id){
+		$sql = "SELECT * FROM vwKlienci WHERE kh_Id = {$id}";		
+		$data = MSSql::getInstance()->query($sql);
+		if(!isset($data[0])){
+			return false;
+		}
+		$data = $data[0];
+
+		$ret_data  = array(
+			'ref_id' => $data['kh_Symbol'],
+			'company_name' => $data['Firma'],
+			'tax_id' => $data['adr_NIP'],
+			'fullname' => $data['adr_NazwaPelna'],			
+			'email' => $data['kh_EMail'],
+			'city' => $data['adr_Miejscowosc'],
+			'post_code' => $data['adr_Kod'],
+			'address' => $data['adr_Adres'],			
+			'phone' => $data['adr_Telefon']
+		);
+
+		return $ret_data;
 	}
 
 	public function add(){

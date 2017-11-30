@@ -2,11 +2,11 @@
 namespace APISubiektGT\SubiektGT;
 use COM;
 use Exception;
-use APISubiektGT\SubiektGT\SubiektObj;
 use APISubiektGT\Logger;
+use APISubiektGT\MSSql;
+use APISubiektGT\SubiektGT\SubiektObj;
 use APISubiektGT\SubiektGT\Product;
 use APISubiektGT\SubiektGT\Customer;
-use APISubiektGT\SubiektGT as SubiektGT;
 
 class Order extends SubiektObj {
 	protected $orderGt;
@@ -17,14 +17,14 @@ class Order extends SubiektObj {
 	protected $reservation = true;
 	protected $order_ref = '';
 	protected $amount = 0;
+	protected $state = -1;
 	protected $pay_type = 'transfer';
 	protected $create_product_if_not_exists = false;
 	protected $orderDetail= array();
 
 	public function __construct($subiektGt,$orderDetail = array()){
 		parent::__construct($subiektGt, $orderDetail);
-		$this->excludeAttr('orderGt');
-		$this->excludeAttr('orderDetail');
+		$this->excludeAttr(array('orderGt','orderDetail','pay_type','create_product_if_not_exists'));
 
 		$symbol = '';
 		if(isset($orderDetail['order_ref'])){
@@ -64,19 +64,61 @@ class Order extends SubiektObj {
 			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = $this->amount; break;
 			case 'credit' : $this->orderGt->PlatnoscKredytKwota = $this->amount; break;
 		}
-		
+		$this->orderGt->NumerOryginalny = $this->reference;
+
+
 	}
 
 	public function getPdf(){
+		$temp_dir = sys_get_temp_dir();
+		if($this->is_exists){
+			$file_name = $temp_dir.'/'.$this->gt_id.'.pdf';
+			$this->orderGt->DrukujDoPliku($file_name,0);
+			$pdf_file = file_get_contents($file_name);
+			return array('encoding'=>'base64','pdf_file'=>base64_encode($pdf_file));
+		}
+		return false;
+	}
+
+	protected function getGtObject(){		
+		$this->gt_id = $this->orderGt->Identyfikator;
+		$o = $this->getOrderById($this->gt_id);
+		
+		$this->reference =  $o['dok_NrPelnyOryg'];
+		$this->comments = $o['dok_Uwagi'];
+		$this->order_ref = $o['dok_NrPelny'];
+		$this->reservation = $o['statusrez'];	
+		$this->state = $o['dok_Status'];				
+		$this->amount = $o['dok_WartBrutto'];
+		
+		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);
+		$this->customer = $customer;
+		$products = $this->getPositionsByOrderId($this->gt_id);
+		foreach($products as $p){
+		
+			$p_a = array('name'=>$p['tw_Nazwa'],
+					   'code'=>$p['tw_Symbol'],
+					   'qty'=>$p['ob_IloscMag'],
+					   'price'=>$p['ob_WartBrutto']);
+			$this->products[] = $p_a;
+		}
 
 	}
 
-	protected function getGtObject(){
-		$this->reference =  $this->orderGt->Tytul;
-		$this->comments = $this->orderGt->Uwagi;
-		$this->order_ref = $this->orderGt->NumerPelny;
-		$this->reservation = $this->orderGt->Rezerwacja;		
+	protected function getOrderById($id){
+		$sql = "SELECT * FROM vwDok4ZamGrid WHERE dok_Id = {$id}";		
+		$data = MSSql::getInstance()->query($sql);
+		return $data[0];
 	}
+
+	protected function getPositionsByOrderId($id){
+		$sql = "SELECT d.*,t.tw_Nazwa, t.tw_Symbol FROM vwDokumenty as d
+  			INNER  JOIN vwTowarLista as t ON tw_id = ob_towid
+			WHERE dok_Id = {$id}";		
+		$data = MSSql::getInstance()->query($sql);
+		return $data;
+	}
+
 
 	public function add(){	
 		$this->customer = isset($this->orderDetail['customer'])?$this->orderDetail['customer']:false;
