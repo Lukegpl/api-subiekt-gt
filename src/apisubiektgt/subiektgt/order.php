@@ -83,7 +83,7 @@ class Order extends SubiektObj {
 		return false;
 	}
 
-	public function paid(){
+	public function makeSaleDoc(){
 		if(!$this->is_exists){
 			return false;
 		}
@@ -92,7 +92,11 @@ class Order extends SubiektObj {
 		}else{
 			$selling_doc = $this->subiektGt->SuDokumentyManager->DodajPAi();
 		}
-		$selling_doc->NaPodstawie(intval($this->gt_id));
+		try{
+			$selling_doc->NaPodstawie(intval($this->gt_id));
+		}catch(Exception $e){			
+			throw new Exception('Nie można utworzyć dokumentu sprzedaży. '.$this->toUtf8($e->getMessage()));
+		}
 		try{
 			$selling_doc->ZapiszSymulacja();
 		}catch(Exception $e){

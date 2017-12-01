@@ -54,7 +54,7 @@ abstract class SubiektObj{
 		return $ret_data;
 	}
 
-	protected function toUtf8($value){
+	static public function toUtf8($value){
 		if(is_object($value)){
 			return $value;
 		}

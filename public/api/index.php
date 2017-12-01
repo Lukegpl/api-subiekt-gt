@@ -61,15 +61,15 @@ if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'
 
 		$result = $obj->$method();
 		$json_response['status'] = 'success';	
-		
+
 		if(is_array($result)){
 			$json_response['data']	 = $result;
 		}
 		Logger::getInstance()->log('api','Request OK',__FILE__,'',__LINE__);
 	}catch(Exception $e){
 		$json_response['status'] = 'fail';
-		$json_response['message'] = $e->getMessage();
-		Logger::getInstance()->log('api_error',$e->getMessage(),$e->getFile(),$e->getLine());		
+		$json_response['message'] = $e->getMessage();			
+		Logger::getInstance()->log('api_error',Helper::toUtf8($e->getMessage()),$e->getFile(),$e->getLine());		
 	}
 
 }else{
@@ -77,5 +77,9 @@ if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'
 	$json_response['message'] = 'Header Content-Type:application/json missing!';
 	Logger::getInstance()->log('api_error',$json_response['message'],__FILE__,__LINE__);
 }
-echo json_encode($json_response,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+$json_string = json_encode($json_response,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+if(JSON_ERROR_UTF8 == json_last_error()){
+	$json_string = json_encode(Helper::toUtf8($json_response),JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+}
+echo $json_string;
 ?>
