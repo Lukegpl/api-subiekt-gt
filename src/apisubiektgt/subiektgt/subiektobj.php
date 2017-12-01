@@ -50,11 +50,6 @@ abstract class SubiektObj{
 				continue;
 			}
 			$ret_data[$key] = self::toUtf8($value);
-			/*if(is_string($value)){
-				$ret_data[$key] = mb_convert_encoding($value,'UTF-8','ISO-8859-2');
-			}else{
-				$ret_data[$key] = $value;
-			}*/
 		}	
 		return $ret_data;
 	}

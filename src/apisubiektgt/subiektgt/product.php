@@ -3,6 +3,7 @@ namespace APISubiektGT\SubiektGT;
 use COM;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
+use APISubiektGT\SubiektGT;
 
 class Product extends SubiektObj{
 
