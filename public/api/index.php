@@ -6,7 +6,7 @@ use APISubiektGT\SubiektGT;
 
 require_once(dirname(__FILE__).'/../init.php');
 $json_response = array();
-
+Logger::getInstance()->log('api','Request start: '.$_SERVER['REMOTE_ADDR'],'',__LINE__);
 
 header("Content-Type: application/json;charset=utf-8");
 
@@ -14,13 +14,12 @@ $header = Helper::getallheaders();
 if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'] || 'application/json;charset=utf-8'==$header['Content-Type']) || true){
 		
 	include('json_test.php');
-	try{
-
+	try{		
 		$run = explode('/',$_GET['c']);
 		if(count($run)!=2){
 			throw new Exception("Nie prawidłowe wywołanie API");
 		}
-		
+
 		$class = "APISubiektGT\\SubiektGT\\{$run[0]}";	
 		$method = $run[1];
 		if(!class_exists($class)){
@@ -64,8 +63,8 @@ if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'
 
 		if(is_array($result)){
 			$json_response['data']	 = $result;
-		}
-		Logger::getInstance()->log('api','Request OK',__FILE__,'',__LINE__);
+		}	
+		Logger::getInstance()->log('api','Request finish: '.$_SERVER['REMOTE_ADDR'],$class.'->'.$method,__LINE__);	
 	}catch(Exception $e){
 		$json_response['status'] = 'fail';
 		$json_response['message'] = $e->getMessage();			

@@ -14,7 +14,7 @@ class Document extends SubiektObj {
 	protected $reference;
 	protected $comments;
 	protected $customer = array();	
-	protected $order_ref = '';
+	protected $doc_ref = '';
 	protected $amount = 0;
 	protected $state = -1;
 	protected $date_of_delivery = '';
@@ -47,7 +47,8 @@ class Document extends SubiektObj {
 			$file_name = $temp_dir.'/'.$this->gt_id.'.pdf';
 			$this->documentGt->DrukujDoPliku($file_name,0);
 			$pdf_file = file_get_contents($file_name);
-			return array('encoding'=>'base64','pdf_file'=>base64_encode($pdf_file));
+			Logger::getInstance()->log('api','Wygenerowano pdf dokumentu: '.$this->doc_ref ,__CLASS__.'->'.__FUNCTION__,__LINE__);
+			return array('encoding'=>'base64','doc_ref'=>$this->doc_ref,'pdf_file'=>base64_encode($pdf_file));
 		}
 		return false;
 	}
@@ -61,7 +62,7 @@ class Document extends SubiektObj {
 		
 		$this->reference =  $o['dok_NrPelnyOryg'];
 		$this->comments = $o['dok_Uwagi'];
-		$this->order_ref = $o['dok_NrPelny'];		
+		$this->doc_ref = $o['dok_NrPelny'];		
 		$this->state = $o['dok_Status'];				
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];

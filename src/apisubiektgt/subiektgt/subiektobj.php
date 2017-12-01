@@ -1,7 +1,8 @@
 <?php
 namespace APISubiektGT\SubiektGT;
 
-use APISubiektGT\SubiektGT as SubiektGT;
+use APISubiektGT\Logger;
+use APISubiektGT\SubiektGT;
 
 abstract class SubiektObj{
 
@@ -51,19 +52,18 @@ abstract class SubiektObj{
 			}
 			$ret_data[$key] = self::toUtf8($value);
 		}	
+		Logger::getInstance()->log('api','Pobrano dane dokumentu id: '.$this->gt_id ,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return $ret_data;
 	}
 
 	static public function toUtf8($value){
-		if(is_object($value)){
-			return $value;
-		}
-		if(!is_array($value)){
+		if(is_string($value)){
 			return mb_convert_encoding($value,'UTF-8','ISO-8859-2');
 		}
-
-		foreach($value as $key => $v){
-			$value[$key] = self::toUtf8($v);
+		if(is_array($value)){
+			foreach($value as $key => $v){
+				$value[$key] = self::toUtf8($v);
+			}
 		}
 		return $value;
 	}

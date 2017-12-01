@@ -2,6 +2,7 @@
 namespace APISubiektGT\SubiektGT;
 
 use COM;
+use APISubiektGT\Logger;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
 
@@ -99,8 +100,7 @@ class Customer extends SubiektObj{
 		if(!isset($data[0])){
 			return false;
 		}
-		$data = $data[0];
-
+		$data = $data[0];		
 		$ret_data  = array(
 			'ref_id' => $data['kh_Symbol'],
 			'company_name' => $data['Firma'],
@@ -111,7 +111,7 @@ class Customer extends SubiektObj{
 			'post_code' => $data['adr_Kod'],
 			'address' => $data['adr_Adres'],			
 			'phone' => $data['adr_Telefon'],
-			'is_company' => $data['kh_Rodzaj']==2?false:true,
+			'is_company' => $data['kh_Typ']==2?false:true,
 		);
 
 		return $ret_data;
@@ -120,7 +120,10 @@ class Customer extends SubiektObj{
 	public function add(){
 		$this->customerGt = $this->subiektGt->Kontrahenci->Dodaj();
 		$this->setGtObject();		
-		$this->customerGt->Zapisz();
+		$this->customerGt->Zapisz();		
+		Logger::getInstance()->log('api','Utworzono klienta od klienta: '.$this->customerGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		$this->gt_id = $this->customerGt->Identyfikator;		
+		return array('gt_id'=>$this->customerGt->Identyfikator);
 	}
 
 	public function update() {
@@ -129,6 +132,7 @@ class Customer extends SubiektObj{
 		}
 		$this->setGtObject();				
 		$this->customerGt->Zapisz();			
+		Logger::getInstance()->log('api','Zaktualizowano klienta od klienta: '.$this->customerGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return true;
 	}
 

@@ -2,6 +2,7 @@
 namespace APISubiektGT\SubiektGT;
 use COM;
 use APISubiektGT\MSSql;
+use APISubiektGT\Logger;
 use APISubiektGT\SubiektGT\SubiektObj;
 use APISubiektGT\SubiektGT;
 
@@ -73,10 +74,10 @@ class Product extends SubiektObj{
 
 	public function add(){
 		$this->productGt = $this->subiektGt->TowaryManager->DodajTowar();
-		$this->setGtObject();
-		$this->productGt->PrzeliczCenyWgCenyKartotekowej();
+		$this->setGtObject();		
 		$this->productGt->Zapisz();
-		return true;
+		Logger::getInstance()->log('api','Utworzono produkt: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		return array('gt_id'=>$this->productGt->Identyfikator);
 	}
 
 	public function update(){
@@ -85,6 +86,7 @@ class Product extends SubiektObj{
 		}
 		$this->setGtObject();
 		$this->productGt->Zapisz();
+		Logger::getInstance()->log('api','Zaktualizowano produkt: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return true;
 	}
 

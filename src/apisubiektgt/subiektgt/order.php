@@ -78,7 +78,8 @@ class Order extends SubiektObj {
 			$file_name = $temp_dir.'/'.$this->gt_id.'.pdf';
 			$this->orderGt->DrukujDoPliku($file_name,0);
 			$pdf_file = file_get_contents($file_name);
-			return array('encoding'=>'base64','pdf_file'=>base64_encode($pdf_file));
+			Logger::getInstance()->log('api','Wygenerowano pdf dokumentu: '.$this->order_ref ,__CLASS__.'->'.__FUNCTION__,__LINE__);
+			return array('encoding'=>'base64','order_ref'=>$this->order_ref ,'pdf_file'=>base64_encode($pdf_file));
 		}
 		return false;
 	}
@@ -87,6 +88,7 @@ class Order extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
+		
 		if($this->customer['is_company'] == true){
 			$selling_doc = $this->subiektGt->SuDokumentyManager->DodajFS();
 		}else{
@@ -108,10 +110,11 @@ class Order extends SubiektObj {
 			$selling_doc->RejestrujNaUF = true;
 		}
 		$selling_doc->Zapisz();			
+		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(
 			'order_ref' => $selling_doc->NumerPelny
 		);
-		return true;
+		
 	}
 
 	protected function getGtObject(){	
@@ -181,7 +184,7 @@ class Order extends SubiektObj {
 			$customer->add();
 		}
 		
-		$cust_data = $customer->get();
+		$cust_data = $customer->get();		
 		$this->orderGt->KontrahentId = intval($cust_data['gt_id']);	
 		
 		foreach($this->products as $p){
@@ -192,15 +195,15 @@ class Order extends SubiektObj {
 			}
 			if(!$add_postition && $this->create_product_if_not_exists == true){
 				$p_obj = new Product($this->subiektGt,$p);
-				$p_obj->add();
-				Logger::getInstance()->log('api','Utworzono produkt'.$p['code'],__CLASS__.'->'.__FUNCTION__,__LINE__);
+				$p_obj->add();				
 				$this->addPosition($p);				
 			}
 		}
 
 		$this->setGtObject();			
 		$this->orderGt->Przelicz();
-		$this->orderGt->Zapisz();	
+		$this->orderGt->Zapisz();
+		Logger::getInstance()->log('api','Utworzono zamówienie od klienta: '.$this->orderGt->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);	
 		return array(
 			'order_ref' => $this->orderGt->NumerPelny
 		);
