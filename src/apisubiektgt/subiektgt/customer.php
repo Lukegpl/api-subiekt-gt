@@ -2,6 +2,7 @@
 namespace APISubiektGT\SubiektGT;
 
 use COM;
+use APISubiektGT\Logger;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
 
@@ -34,11 +35,11 @@ class Customer extends SubiektObj{
 		if($symbol!='' && $subiektGt->Kontrahenci->Istnieje($symbol)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($symbol);
 			$this->getGtObject();
-			$this->is_exists = true;			
+			$this->is_exists = true;				
 		}			
 	}
 
-	protected function setGtObject(){
+	protected function setGtObject(){			
 		$this->customerGt->Symbol = $this->ref_id;		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
@@ -48,7 +49,7 @@ class Customer extends SubiektObj{
 
 		}else{
 			$this->customerGt->Osoba = 1;
-			$this->customerGt->OsobaImie = $this->firstname;
+			$this->customerGt->OsobaImie = $this->firstname;			
 			$this->customerGt->OsobaNazwisko = $this->lastname;
 			$this->customerGt->NazwaPelna = $this->firstname.' '.$this->lastname;
 		}		
@@ -72,10 +73,8 @@ class Customer extends SubiektObj{
 		return true;
 	}
 
-	protected function getGtObject(){
-		if(!$this->customerGt){
-			return false;
-		}
+	protected function getGtObject(){	
+		$this->is_company = !$this->customerGt->Osoba;
 		$this->gt_id = $this->customerGt->Identyfikator;
 		$this->ref_id = $this->customerGt->Symbol;		
 		$this->company_name = $this->customerGt->NazwaPelna;
@@ -101,8 +100,7 @@ class Customer extends SubiektObj{
 		if(!isset($data[0])){
 			return false;
 		}
-		$data = $data[0];
-
+		$data = $data[0];		
 		$ret_data  = array(
 			'ref_id' => $data['kh_Symbol'],
 			'company_name' => $data['Firma'],
@@ -112,7 +110,8 @@ class Customer extends SubiektObj{
 			'city' => $data['adr_Miejscowosc'],
 			'post_code' => $data['adr_Kod'],
 			'address' => $data['adr_Adres'],			
-			'phone' => $data['adr_Telefon']
+			'phone' => $data['adr_Telefon'],
+			'is_company' => $data['kh_Typ']==2?false:true,
 		);
 
 		return $ret_data;
@@ -121,15 +120,19 @@ class Customer extends SubiektObj{
 	public function add(){
 		$this->customerGt = $this->subiektGt->Kontrahenci->Dodaj();
 		$this->setGtObject();		
-		$this->customerGt->Zapisz();
+		$this->customerGt->Zapisz();		
+		Logger::getInstance()->log('api','Utworzono klienta od klienta: '.$this->customerGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		$this->gt_id = $this->customerGt->Identyfikator;		
+		return array('gt_id'=>$this->customerGt->Identyfikator);
 	}
 
 	public function update() {
 		if(!$this->customerGt){
 			return false;
 		}
-		$this->setGtObject();
-		$this->customerGt->Zapisz();	
+		$this->setGtObject();				
+		$this->customerGt->Zapisz();			
+		Logger::getInstance()->log('api','Zaktualizowano klienta od klienta: '.$this->customerGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return true;
 	}
 

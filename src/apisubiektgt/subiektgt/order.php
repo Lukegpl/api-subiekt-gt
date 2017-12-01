@@ -17,9 +17,11 @@ class Order extends SubiektObj {
 	protected $reservation = true;
 	protected $order_ref = '';
 	protected $selling_doc = '';
-	protected $amount = 0;	
+	protected $amount = 0;
+	protected $paid_amount = 0;	
 	protected $state = -1;
 	protected $date_of_delivery = '';
+	protected $payment_comments = '';
 	protected $pay_type = 'transfer';
 	protected $create_product_if_not_exists = false;
 	protected $orderDetail= array();
@@ -48,8 +50,8 @@ class Order extends SubiektObj {
 		}
 
 		$p_data = $p->get();
-
-		$position = $this->orderGt->Pozycje->Dodaj($p_data['gt_id']);
+		//var_dump($p_data);
+		$position = $this->orderGt->Pozycje->Dodaj($p_data['code']);
 		$position->IloscJm = $product['qty'];
 		$position->WartoscBruttoPrzedRabatem = $product['price_before_discount']*$product['qty'];
 		$position->WartoscBruttoPoRabacie  = $product['price']*$product['qty'];	
@@ -59,15 +61,14 @@ class Order extends SubiektObj {
 	protected function setGtObject(){
 		$this->orderGt->Tytul = $this->reference;
 		$this->orderGt->Uwagi  = $this->comments;	
-		$this->orderGt->Rezerwacja = $this->reservation;	
+		$this->orderGt->Rezerwacja = $this->reservation;		
+		$this->orderGt->NumerOryginalny = $this->reference;
 		switch($this->pay_type){
 			case 'transfer' : $this->orderGt->PlatnoscPrzelewKwota = $this->amount; break;
-			case 'credit' : $this->orderGt->PlatnoscKartaKwota = $this->amount; break;
+			case 'cart' : $this->orderGt->PlatnoscKartaKwota = $this->amount; break;
 			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = $this->amount; break;
 			case 'credit' : $this->orderGt->PlatnoscKredytKwota = $this->amount; break;
 		}
-		$this->orderGt->NumerOryginalny = $this->reference;
-
 
 	}
 
@@ -77,9 +78,43 @@ class Order extends SubiektObj {
 			$file_name = $temp_dir.'/'.$this->gt_id.'.pdf';
 			$this->orderGt->DrukujDoPliku($file_name,0);
 			$pdf_file = file_get_contents($file_name);
-			return array('encoding'=>'base64','pdf_file'=>base64_encode($pdf_file));
+			Logger::getInstance()->log('api','Wygenerowano pdf dokumentu: '.$this->order_ref ,__CLASS__.'->'.__FUNCTION__,__LINE__);
+			return array('encoding'=>'base64','order_ref'=>$this->order_ref ,'pdf_file'=>base64_encode($pdf_file));
 		}
 		return false;
+	}
+
+	public function makeSaleDoc(){
+		if(!$this->is_exists){
+			return false;
+		}
+		
+		if($this->customer['is_company'] == true){
+			$selling_doc = $this->subiektGt->SuDokumentyManager->DodajFS();
+		}else{
+			$selling_doc = $this->subiektGt->SuDokumentyManager->DodajPAi();
+		}
+		try{
+			$selling_doc->NaPodstawie(intval($this->gt_id));
+		}catch(Exception $e){			
+			throw new Exception('Nie można utworzyć dokumentu sprzedaży. '.$this->toUtf8($e->getMessage()));
+		}
+		try{
+			$selling_doc->ZapiszSymulacja();
+		}catch(Exception $e){
+			if($selling_doc->PozycjeBrakujace->Liczba()){
+				throw new Exception('Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie!');
+			}
+		}
+		if($this->customer['is_company']==true){
+			$selling_doc->RejestrujNaUF = true;
+		}
+		$selling_doc->Zapisz();			
+		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		return array(
+			'order_ref' => $selling_doc->NumerPelny
+		);
+		
 	}
 
 	protected function getGtObject(){	
@@ -98,8 +133,9 @@ class Order extends SubiektObj {
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		
-		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);
+		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);		
 		$this->customer = $customer;
+
 		$positions = array();
 		for($i=1; $i<=$this->orderGt->Pozycje->Liczba(); $i++){
 			$positions[$this->orderGt->Pozycje->Element($i)->Id]['name'] = $this->orderGt->Pozycje->Element($i)->TowarNazwa;
@@ -146,12 +182,10 @@ class Order extends SubiektObj {
 		$customer = new Customer($this->subiektGt,$this->customer);
 		if(!$customer->isExists()){
 			$customer->add();
-		}else{
-			$customer->update();
 		}
 		
-		$cust_data = $customer->get();
-		$this->orderGt->KontrahentId = $cust_data['gt_id'];		
+		$cust_data = $customer->get();		
+		$this->orderGt->KontrahentId = intval($cust_data['gt_id']);	
 		
 		foreach($this->products as $p){
 			$add_postition = false;
@@ -161,15 +195,15 @@ class Order extends SubiektObj {
 			}
 			if(!$add_postition && $this->create_product_if_not_exists == true){
 				$p_obj = new Product($this->subiektGt,$p);
-				$p_obj->add();
-				Logger::getInstance()->log('api','Utworzono produkt'.$p['code'],__CLASS__.'->'.__FUNCTION__,__LINE__);
+				$p_obj->add();				
 				$this->addPosition($p);				
 			}
 		}
 
-		$this->setGtObject();		
+		$this->setGtObject();			
 		$this->orderGt->Przelicz();
-		$this->orderGt->Zapisz();	
+		$this->orderGt->Zapisz();
+		Logger::getInstance()->log('api','Utworzono zamówienie od klienta: '.$this->orderGt->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);	
 		return array(
 			'order_ref' => $this->orderGt->NumerPelny
 		);
