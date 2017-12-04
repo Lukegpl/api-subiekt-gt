@@ -44,6 +44,14 @@ class Config{
 		return $this->api_key;
 	}
 
+
+	public function verifyAPIKey($api_key){
+		if($this->api_key == trim($api_key)){
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	*	Get server variable
 	*/
