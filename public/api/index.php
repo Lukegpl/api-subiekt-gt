@@ -20,18 +20,19 @@ try{
 
 
 		//Get Json stream from "input".
-		/*$jsonStr = @file_get_contents("php://input");
+		$jsonStr = @file_get_contents("php://input");
+		$jsonStr = trim($jsonStr);		
 		if($jsonStr!=NULL){
-			$json_request = @json_decode($json,true);
-			if(json_last_error()>0){
-				throw new Exception(json_last_error_msg());
+			$json_request = json_decode($jsonStr,true);
+			if(json_last_error()>0){				
+				throw new Exception("JSON read: ".json_last_error_msg());
 			}
 		}else{
 			throw new Exception("Brak danych w rządaniu!");
 		}
-		*/
+		
 
-		include('json_test.php');
+		//include('json_test.php');
 		
 		$run = explode('/',$_GET['c']);
 		if(count($run)!=2){
