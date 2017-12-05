@@ -11,10 +11,29 @@ Logger::getInstance()->log('api','Request start: '.$_SERVER['REMOTE_ADDR'],'',__
 header("Content-Type: application/json;charset=utf-8");
 
 $header = Helper::getallheaders();
-if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'] || 'application/json;charset=utf-8'==$header['Content-Type']) || true){
+try{	
+		if(false && (!isset($header['Content-Type']) ||
+			!('application/json'==$header['Content-Type'] || 'application/json;charset=utf-8'==$header['Content-Type']))
+			){
+			throw new Exception("Header Content-Type:application/json missing!");
+		}
+
+
+		//Get Json stream from "input".
+		$jsonStr = @file_get_contents("php://input");
+		$jsonStr = trim($jsonStr);		
+		if($jsonStr!=NULL){
+			$json_request = json_decode($jsonStr,true);
+			if(json_last_error()>0){				
+				throw new Exception("JSON read: ".json_last_error_msg());
+			}
+		}else{
+			throw new Exception("Brak danych w rządaniu!");
+		}
 		
-	include('json_test.php');
-	try{		
+
+		//include('json_test.php');
+		
 		$run = explode('/',$_GET['c']);
 		if(count($run)!=2){
 			throw new Exception("Nie prawidłowe wywołanie API");
@@ -29,53 +48,50 @@ if(isset($header['Content-Type']) && ('application/json'==$header['Content-Type'
 		if(!method_exists($class ,$method)){
 			throw new Exception("Nie prawidłowe wywołanie API. Brak metody: {$method}");		
 		}
-		//$jsonStr = @file_get_contents("php://input");
-		//if($jsonStr!=NULL){
-			//$json_request= json_decode($json,true);
-		//}
-		//Config load
-		$cfg = new Config(CONFIG_INI_FILE);
-		$cfg->load();
-
-		//Create instance of Subiekt process and connect to it
-		$subiektGt = SubiektGT::getInstance($cfg);
 		
+
 		//Check is set api_key
 		if(!isset($json_request['api_key'])){
 			throw new Exception('Nie podano klucza API=>api_key');
 		}
+		//Config load
+		$cfg = new Config(CONFIG_INI_FILE);
+		$cfg->load();
 
+
+		if(!$cfg->verifyAPIKey($json_request['api_key'])){
+			throw new Exception("Nie prawidłowy klucz API - api_key!");
+		}
+
+		//Create instance of Subiekt process and connect to it
+		$subiektGt = SubiektGT::getInstance($cfg);
+		
 		//Connect or create SubiektGt Windows process
 		$subiektGtCom = $subiektGt->connect();		
 
-		//Run API request.
-		
+		//Processing API request.		
 		$result = false;
 
+		//Create API class object 
 		$obj = new $class($subiektGtCom,$json_request['data']);
 		$reflection = new ReflectionMethod($obj , $method);
 		if(!$reflection->isPublic()){
 			throw new Exception("Wywołanie metody: {$method} jest zabronione!");
 		}
 
+		//Run API request
 		$result = $obj->$method();
-		$json_response['status'] = 'success';	
 
-		if(is_array($result)){
-			$json_response['data']	 = $result;
-		}	
+		$json_response['status'] = 'success';			
+		$json_response['data']	 = $result;		
 		Logger::getInstance()->log('api','Request finish: '.$_SERVER['REMOTE_ADDR'],$class.'->'.$method,__LINE__);	
-	}catch(Exception $e){
-		$json_response['status'] = 'fail';
-		$json_response['message'] = $e->getMessage();			
-		Logger::getInstance()->log('api_error',Helper::toUtf8($e->getMessage()),$e->getFile(),$e->getLine());		
-	}
 
-}else{
+}catch(Exception $e){
 	$json_response['status'] = 'fail';
-	$json_response['message'] = 'Header Content-Type:application/json missing!';
-	Logger::getInstance()->log('api_error',$json_response['message'],__FILE__,__LINE__);
+	$json_response['message'] = $e->getMessage();			
+	Logger::getInstance()->log('api_error',Helper::toUtf8($e->getMessage()),$e->getFile(),$e->getLine());		
 }
+
 $json_string = json_encode($json_response,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 if(JSON_ERROR_UTF8 == json_last_error()){
 	$json_string = json_encode(Helper::toUtf8($json_response),JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
