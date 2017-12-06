@@ -16,7 +16,7 @@ class Customer extends SubiektObj{
 	protected $post_code;
 	protected $city;
 	protected $tax_id;
-	protected $company_name;
+	protected $company_name ='';
 	protected $address;
 	protected $address_no;
 	protected $phone = false;
@@ -113,7 +113,6 @@ class Customer extends SubiektObj{
 			'phone' => $data['adr_Telefon'],
 			'is_company' => $data['kh_Typ']==2?false:true,
 		);
-
 		return $ret_data;
 	}
 
