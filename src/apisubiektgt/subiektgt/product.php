@@ -14,7 +14,7 @@ class Product extends SubiektObj{
 	protected $price;
 	protected $name;	
 	protected $qty;	
-	protected $id_mag = 0;
+	protected $id_store = 0;
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
@@ -66,8 +66,15 @@ class Product extends SubiektObj{
 		return true;
 	}
 
+
+	public function getListByStore(){
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available FROM vwTowar WHERE st_MagId = ".intval({$this->id_store);		
+		$data = MSSql::getInstance()->query($sql);
+		return $data[0];	
+	}
+
 	protected function getQty(){
-		$sql = "SELECT TOP 1 Rezerwacja,Dostepne FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = {$this->id_mag}";		
+		$sql = "SELECT TOP 1 Rezerwacja,Dostepne FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = ".intval($this->id_store);		
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];
 	}
