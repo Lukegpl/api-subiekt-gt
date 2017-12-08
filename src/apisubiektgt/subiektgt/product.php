@@ -42,7 +42,7 @@ class Product extends SubiektObj{
 		}
 		$this->productGt->Symbol = $this->code;
 		$this->productGt->Aktywny = true;
-		$this->CenaKartotekowa = $this->price;
+		$this->CenaKartotekowa = floatval($this->price);
 		$this->productGt->KodyKreskowe->Dodaj($this->ean);
 		return true;
 	}
@@ -68,7 +68,7 @@ class Product extends SubiektObj{
 
 
 	public function getListByStore(){
-		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available FROM vwTowar WHERE st_MagId = ".intval({$this->id_store);		
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];	
 	}
