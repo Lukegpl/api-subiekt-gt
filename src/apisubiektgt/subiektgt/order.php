@@ -53,8 +53,8 @@ class Order extends SubiektObj {
 		//var_dump($p_data);
 		$position = $this->orderGt->Pozycje->Dodaj($p_data['code']);
 		$position->IloscJm = $product['qty'];
-		$position->WartoscBruttoPrzedRabatem = $product['price_before_discount']*$product['qty'];
-		$position->WartoscBruttoPoRabacie  = $product['price']*$product['qty'];	
+		$position->WartoscBruttoPrzedRabatem = floatval($product['price_before_discount']) * intval($product['qty']);
+		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);	
 		return $position;
 	}
 
@@ -64,10 +64,10 @@ class Order extends SubiektObj {
 		$this->orderGt->Rezerwacja = $this->reservation;		
 		$this->orderGt->NumerOryginalny = $this->reference;
 		switch($this->pay_type){
-			case 'transfer' : $this->orderGt->PlatnoscPrzelewKwota = $this->amount; break;
-			case 'cart' : $this->orderGt->PlatnoscKartaKwota = $this->amount; break;
-			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = $this->amount; break;
-			case 'credit' : $this->orderGt->PlatnoscKredytKwota = $this->amount; break;
+			case 'transfer' : $this->orderGt->PlatnoscPrzelewKwota = floatval($this->amount); break;
+			case 'cart' : $this->orderGt->PlatnoscKartaKwota = floatval($this->amount); break;
+			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = floatval($this->amount); break;
+			case 'credit' : $this->orderGt->PlatnoscKredytKwota = floatval($this->amount); break;
 		}
 
 	}

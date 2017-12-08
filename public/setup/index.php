@@ -129,8 +129,7 @@ require_once(dirname(__FILE__).'/../init.php');
 	   		}else{
 	   			echo "<span style=\"color:#FF2F01;\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i> brak pliku konfiguracyjnego ".CONFIG_INI_FILE."</span><br/>";
 	   		}
-	   	?>
-	   <p>Czy na komuterze jest zainstalowany SubiektGT ?</p>
+	   	?>	   
     </div>
 	</div>
     <form method="post">

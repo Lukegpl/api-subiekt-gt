@@ -17,7 +17,7 @@ class Document extends SubiektObj {
 	protected $doc_ref = '';
 	protected $amount = 0;
 	protected $state = -1;
-	protected $date_of_delivery = '';
+	protected $date_of_delivery = '';	
 	protected $documentDetail= array();
 
 	public function __construct($subiektGt,$documentDetail = array()){
@@ -62,7 +62,7 @@ class Document extends SubiektObj {
 		
 		$this->reference =  $o['dok_NrPelnyOryg'];
 		$this->comments = $o['dok_Uwagi'];
-		$this->doc_ref = $o['dok_NrPelny'];		
+		$this->doc_ref = $o['dok_NrPelny'];			
 		$this->state = $o['dok_Status'];				
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
