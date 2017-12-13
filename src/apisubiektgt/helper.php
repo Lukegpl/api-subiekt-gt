@@ -18,7 +18,14 @@ class Helper {
     } 
 
   static public function toUtf8($value){
+    $iso_to_win = array(185=>177,156=>182,159=>188,165=>161,140=>166,143=>172);
     if(is_string($value)){
+      for($i=0;$i<strlen($value);$i++){
+        $chr_no = ord($value[$i]);
+        if(isset($iso_to_win[$chr_no])){
+          $value[$i] = chr($iso_to_win[$chr_no]);
+        }
+      }
       return mb_convert_encoding($value,'UTF-8','ISO-8859-2');
     }
     if(is_array($value)){
@@ -28,6 +35,31 @@ class Helper {
     }
     return $value;
   }
+
+  static public function toWin($value){
+    $iso_to_win = array(177=>185,182=>156,188=>159,161=>165,166=>140,172=>143);
+
+    if(is_string($value)){
+
+
+      $value = mb_convert_encoding($value,'ISO-8859-2','UTF-8');
+      //$keys = array_keys($iso_to_win);
+      for($i=0;$i<strlen($value);$i++){
+        $chr_no = ord($value[$i]);
+        if(isset($iso_to_win[$chr_no])){
+          $value[$i] = chr($iso_to_win[$chr_no]);
+        }
+      }
+      return $value;
+    }
+    if(is_array($value)){
+      foreach($value as $key => $v){
+        $value[$key] = self::toWin($v);
+      }
+    }
+    return $value;
+  }
+
 
   static public function getValue($key, $defaultValue = false)
   {
