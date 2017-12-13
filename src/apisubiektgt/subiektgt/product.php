@@ -34,8 +34,8 @@ class Product extends SubiektObj{
 	protected function setGtObject(){				
 		if(!$this->is_exists){
 			$new_prefix = SubiektGT::getInstance()->getConfig()->getNewProductPrefix();
-			if(strlen($new_prefix)>0){
-				$this->productGt->Nazwa = "{$new_prefix} {$this->name}";
+			if(strlen($new_prefix)>0){				
+				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
 			}
 		}else{
 			$this->productGt->Nazwa = $this->name;

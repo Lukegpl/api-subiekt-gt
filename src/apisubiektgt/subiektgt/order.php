@@ -86,7 +86,7 @@ class Order extends SubiektObj {
 
 	public function makeSaleDoc(){
 		if(!$this->is_exists){
-			return false;
+			throw new Exception('Nie odnaleziono dokumentu: '.$this->order_ref);
 		}
 		
 		if($this->customer['is_company'] == true){
@@ -112,7 +112,7 @@ class Order extends SubiektObj {
 		$selling_doc->Zapisz();			
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(
-			'order_ref' => $selling_doc->NumerPelny
+			'doc_ref' => $selling_doc->NumerPelny
 		);
 		
 	}
