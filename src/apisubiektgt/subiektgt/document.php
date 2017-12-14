@@ -11,18 +11,39 @@ use APISubiektGT\SubiektGT\Customer;
 class Document extends SubiektObj {
 	protected $documentGt;
 	protected $products = false;	
+	protected $fiscal_state = false;
+	protected $accounting_state = false;
 	protected $reference;
 	protected $comments;
 	protected $customer = array();	
 	protected $doc_ref = '';
+	protected $doc_type = 0;
 	protected $amount = 0;
 	protected $state = -1;
-	protected $date_of_delivery = '';	
+	protected $date_of_delivery = '';		
 	protected $documentDetail= array();
+	protected $doc_types = array(1=>'FZ',
+						 2=>'FS',
+						 5=>'KFZ',
+						 6=>'KFS',
+						 9=>'MM',
+						10=> 'PZ',
+						11=>'WZ',
+						12=>'PW',
+						13=>'RW',
+						14=>'ZW',
+						15=>'ZD',
+						16=>'ZK',
+						21=>'PA',
+						29=>'IW',
+						35=>'ZPZ',
+						36=>'ZWZ',
+						62=>'FM',
+						);
 
 	public function __construct($subiektGt,$documentDetail = array()){
 		parent::__construct($subiektGt, $documentDetail);
-		$this->excludeAttr(array('documentGt','documentDetail'));		
+		$this->excludeAttr(array('documentGt','documentDetail','doc_types'));		
 		$symbol = '';
 		if(isset($documentDetail['doc_ref'])){
 			$symbol = trim($documentDetail['doc_ref']);
@@ -48,9 +69,27 @@ class Document extends SubiektObj {
 			$this->documentGt->DrukujDoPliku($file_name,0);
 			$pdf_file = file_get_contents($file_name);
 			Logger::getInstance()->log('api','Wygenerowano pdf dokumentu: '.$this->doc_ref ,__CLASS__.'->'.__FUNCTION__,__LINE__);
-			return array('encoding'=>'base64','doc_ref'=>$this->doc_ref,'pdf_file'=>base64_encode($pdf_file));
+			return array('encoding'=>'base64',
+					 'doc_ref'=>$this->doc_ref,
+					 'is_exists' => $this->is_exists,
+					 'state' => $this->state,
+					 'accounting_state' => $this->accounting_state,
+					 'fiscal_state' => $this->fiscal_state,
+					 'doc_type' => $this->doc_type,
+					 'pdf_file'=>base64_encode($pdf_file));
 		}
 		return false;
+	}
+
+
+	public function getState(){
+		return array('doc_ref'=>$this->doc_ref,
+				 'is_exists' => $this->is_exists,
+				 'doc_type' => $this->doc_type,
+				 'state' => $this->state,
+				 'accounting_state' => $this->accounting_state,
+				 'fiscal_state' => $this->fiscal_state,				 
+				);
 	}
 
 	protected function getGtObject(){	
@@ -58,6 +97,10 @@ class Document extends SubiektObj {
 			return false;
 		}	
 		$this->gt_id = $this->documentGt->Identyfikator;
+		$this->fiscal_state = $this->documentGt->StatusFiskalny;
+		$this->accounting_state = $this->documentGt->StatusKsiegowy;
+		$this->doc_type = $this->doc_types[$this->documentGt->Typ];
+		
 		$o = $this->getDocumentById($this->gt_id);
 		
 		$this->reference =  $o['dok_NrPelnyOryg'];
