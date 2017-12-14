@@ -72,6 +72,7 @@ class Document extends SubiektObj {
 			return array('encoding'=>'base64',
 					 'doc_ref'=>$this->doc_ref,
 					 'is_exists' => $this->is_exists,
+					 'file_name' => mb_ereg_replace("[ /]","_",$this->doc_ref.'.pdf'),
 					 'state' => $this->state,
 					 'accounting_state' => $this->accounting_state,
 					 'fiscal_state' => $this->fiscal_state,
