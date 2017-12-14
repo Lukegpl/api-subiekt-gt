@@ -12,7 +12,7 @@ abstract class SubiektObj{
 	protected $gt_id = false;
 	protected $exclude_attibs = array('subiektGt',
 							'exclude_attibs',
-							'is_exists');	
+							);	
 
 	public function __construct($subiektGt, $objDetail = array()){
 		if(is_array($objDetail)){
@@ -55,7 +55,7 @@ abstract class SubiektObj{
 			}
 			$ret_data[$key] = self::toUtf8($value);
 		}	
-		Logger::getInstance()->log('api','Pobrano dane dokumentu id: '.$this->gt_id ,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		Logger::getInstance()->log('api','Pobrano dane obiektu id: '.$this->gt_id ,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return $ret_data;
 	}
 
