@@ -106,7 +106,7 @@ class Order extends SubiektObj {
 				throw new Exception('Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie!');
 			}
 		}
-		if($this->customer['is_company']==true){
+		if($this->customer['is_company']== false){
 			$selling_doc->RejestrujNaUF = true;
 		}
 		$selling_doc->Zapisz();			
