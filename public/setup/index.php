@@ -117,6 +117,12 @@ require_once(dirname(__FILE__).'/../init.php');
 	   			echo "<span style=\"color:#FF2F01;\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i> brak katalogu konfiguracyjnego $cfg_dir</span><br/>";
 	   		}
 
+
+	   		if(is_dir(LOG_DIR)){
+	   			echo "<span style=\"color:#00A474;\"><i class=\"fa fa-check-circle-o\" aria-hidden=\"true\"></i> katalog logów</span><br/>";
+	   		}else{
+	   			echo "<span style=\"color:#FF2F01;\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i> brak katalogu logów:  ".CONFIG_INI_FILE."</span><br/>";
+	   		}
 	   		
 	   		if(is_writable($cfg_dir)){
 	   			echo "<span style=\"color:#00A474;\"><i class=\"fa fa-check-circle-o\" aria-hidden=\"true\"></i> prawa zapisu do katalogu konfiguracyjnego </span><br/>";
@@ -128,7 +134,7 @@ require_once(dirname(__FILE__).'/../init.php');
 	   			echo "<span style=\"color:#00A474;\"><i class=\"fa fa-check-circle-o\" aria-hidden=\"true\"></i> plik konfiguracyjny </span><br/>";
 	   		}else{
 	   			echo "<span style=\"color:#FF2F01;\"><i class=\"fa fa-minus-circle\" aria-hidden=\"true\"></i> brak pliku konfiguracyjnego ".CONFIG_INI_FILE."</span><br/>";
-	   		}
+	   		}	   		
 	   	?>	   
     </div>
 	</div>
