@@ -52,9 +52,11 @@ class Order extends SubiektObj {
 		$p_data = $p->get();
 		//var_dump($p_data);
 		$position = $this->orderGt->Pozycje->Dodaj($p_data['code']);
-		$position->IloscJm = $product['qty'];
-		$position->WartoscBruttoPrzedRabatem = floatval($product['price_before_discount']) * intval($product['qty']);
-		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);	
+		$position->IloscJm = $product['qty'];				
+		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);
+		if(floatval($product['price_before_discount'])>0){
+			$position->WartoscBruttoPrzedRabatem = floatval($product['price_before_discount']) * intval($product['qty']);
+		}
 		return $position;
 	}
 
