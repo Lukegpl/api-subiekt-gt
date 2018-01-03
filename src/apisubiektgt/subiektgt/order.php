@@ -94,6 +94,10 @@ class Order extends SubiektObj {
 		}else{
 			$selling_doc = $this->subiektGt->SuDokumentyManager->DodajPAi();
 		}
+		if($this->orderGt->WartoscBrutto == 0){
+			throw new Exception('Nie można utworzyć dokumentu sprzedaży. 0 wartość dokumentu.');
+		}
+
 		try{
 			$selling_doc->NaPodstawie(intval($this->gt_id));
 		}catch(Exception $e){			
