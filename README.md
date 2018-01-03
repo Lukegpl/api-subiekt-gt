@@ -21,33 +21,6 @@ aplikacje które muszą się zostać wcześniej zainstalowane na maszymie Window
 - php 
 
 
-```
-composer require league/plates
-```
-
-## Documentation
-
-Full documentation can be found at [platesphp.com](http://platesphp.com/).
-
-## Testing
-
-```bash
-phpunit
-```
-
-## Contributing
-
-Please see [CONTRIBUTING](https://github.com/thephpleague/plates/blob/master/CONTRIBUTING.md) for details.
-
-## Security
-
-If you discover any security related issues, please email rj@bighead.net instead of using the issue tracker.
-
-## Credits
-
-- [RJ Garcia](https://github.com/ragboyjr) (Current Maintainer)
-- [Jonathan Reinink](https://github.com/reinink) (Original Author)
-- [All Contributors](https://github.com/thephpleague/plates/contributors)
 
 ## License
 
