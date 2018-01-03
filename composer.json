@@ -1,5 +1,5 @@
 {
-    "name": "LukeOtdr/api-subiekt-gt",
+    "name": "lukeotdr/api-subiekt-gt",
     "description": "Wrapper SubiektGT + SferaGT - PHP REST API",
     "type": "project",
     "source": {
