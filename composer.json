@@ -1,0 +1,20 @@
+{
+    "name": LukeOtdr/api-subiekt-gt",
+    "description": "Wrapper SubiektGT + SferaGT - PHP REST API",
+    "type": "project",
+    "source": {
+        "url": "https://github.com/LukeOtdr/api-subiekt-gt",
+        "type": "git",
+        "reference":"master"
+    },
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Lukasz Golonka",
+            "email": "l.golonka@outdoorzy.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+}

@@ -1,5 +1,5 @@
-# api-subiekt-gt
-Bramka REST API PHP dla SubiektGT + Sfera GT.
+PHP REST API dla SubiektGT + SferaGT
+======
 
 API udostępnia interfejs i zapewnia komunikacje z SubiektGT w następujący sposób:
 
@@ -11,3 +11,17 @@ API udostępnia interfejs i zapewnia komunikacje z SubiektGT w następujący spo
 - pobranie dowolnego dokumentu w formacie pdf
 - pobranie podstawowych danych o kliencie
 - pobranie podstawowych danych o towarze oraz jego stanie magazynowym
+
+
+## Instalacja
+
+aplikacje które muszą się zostać wcześniej zainstalowane na maszymie Windows dalej nazywanym serwerem:
+- SubiektGT oraz SferaGT
+- serwer WWW apache
+- php 
+
+
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/thephpleague/plates/blob/master/LICENSE) for more information.
