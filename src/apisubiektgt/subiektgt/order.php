@@ -109,6 +109,7 @@ class Order extends SubiektObj {
 		if($this->customer['is_company']== false){
 			$selling_doc->RejestrujNaUF = true;
 		}
+		$selling_doc->Podtytul = $this->orderGt->Tytul;//.'/'.$this->orderGt->order_ref;
 		$selling_doc->Zapisz();			
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(

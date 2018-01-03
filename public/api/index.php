@@ -83,12 +83,15 @@ try{
 		$result = $obj->$method();
 
 		$json_response['state'] = 'success';			
-		$json_response['data']	 = $result;		
+		$json_response['data']	 = $result;				
 		Logger::getInstance()->log('api','Request finish: '.$_SERVER['REMOTE_ADDR'],$class.'->'.$method,__LINE__);	
 
 }catch(Exception $e){
 	$json_response['state'] = 'fail';
-	$json_response['message'] = $e->getMessage();			
+	$json_response['message'] = $e->getMessage();		
+	if(isset($json_request['data'])){
+		$json_response['data'] = $json_request['data'];
+	}
 	Logger::getInstance()->log('api_error',Helper::toUtf8($e->getMessage()),$e->getFile(),$e->getLine());		
 }
 

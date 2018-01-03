@@ -9,12 +9,12 @@ use APISubiektGT\SubiektGT;
 class Product extends SubiektObj{
 
 	protected $productGt = false;	
-	protected $ean;
+	protected $ean = 0;
 	protected $code;
 	protected $price;
 	protected $name;	
 	protected $qty;	
-	protected $id_store = 0;
+	protected $id_store = 0;	
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
@@ -43,7 +43,10 @@ class Product extends SubiektObj{
 		$this->productGt->Symbol = $this->code;
 		$this->productGt->Aktywny = true;
 		$this->CenaKartotekowa = floatval($this->price);
-		$this->productGt->KodyKreskowe->Dodaj($this->ean);
+		$ean = sprintf('%d',trim($this->ean));
+		if(!$this->is_exists && $ean>0){
+			$this->productGt->KodyKreskowe->Dodaj($ean);
+		}
 		return true;
 	}
 
