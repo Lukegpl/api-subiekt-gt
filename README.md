@@ -29,20 +29,20 @@ Poniższy przykład przedstawia pobranie wersji developerskiej.
 create-project lukeotdr/api-subiekt-gt  --stability dev
 ```
 
-Paczkę umieszczamy tak aby serwer www miał możliwość uruchomienia plików PHP z katalogu public.
-Uruchamiamy konfigurację api poprzez przykładowe poniższe wywyołanie:
+Paczkę umieszczamy tak aby serwer www miał możliwość uruchomienia plików PHP z katalogu public lub odpowiednio kinfigurujemy serwer www.
+Uruchamiamy konfigurację api poprzez przykładowe poniższe wywołanie:
 
 ```
 http://192.168.1.1/api-subiekt-gt/public/setup
 ```
 
-Powyższe wywyołanie uruchomi konfigurator api, który pomoże utworzyć plik konfiguracyjny do połączenia ze Sferą GT 
-oraz SQLServer-em.  Należy przygotować użytkownika, hasło do SQLServera dzięki któremu zostanie nawiązane połączenie z 
-bazą Subiekta. Jeśli była autentykacja windows trzeba utworzyć użytkownika oraz hasło z dostępem do podmiotu. 
-Można użyć danych admina "sa" lecz nie zalecane. 
+Powyższe wywołanie uruchomi konfigurator api, który pomoże utworzyć plik konfiguracyjny do połączenia ze Sferą GT 
+oraz SQLServer-em.  Należy przygotować użytkownika oraz hasło do SQLServera dzięki któremu zostanie nawiązane połączenie z 
+bazą Subiekta. Jeśli była autentykacja windows trzeba utworzyć takiego użytkownika z dostępem do podmiotu. 
+Do testów można użyć danych admina "sa" lecz na produkcji nie zalecane. 
 
 Po konfiguracji należy jescze przeprowadzić test połączenia podając istniejący numer dokumentu sprzedaży z Subiekta. Np: "PA 13659/12/2017".
-W odpowiedzi w przypadku poprawnego połączenia i pobrania danych powinniśmy otrzymać coś podobnego jak poniżej.
+W odpowiedzi i poprawnego połączenia powinniśmy zobaczyć coś podobnego jak poniżej.
 
 Wysłane rządanie:
 
@@ -58,7 +58,7 @@ Wysłane rządanie:
 
 XXXXXXXXXXXXXXXXXXXXXX - wygenerowane api key.
 
-Odebrana odpoweiedź:
+Odebrana odpowiedź:
 
 ```
 {
@@ -108,10 +108,26 @@ Odebrana odpoweiedź:
 
 
 Jeśli udało się połączyć z bazą danych to teraz nie pozostaje nic innego jak utworzyć interfejs do komunikacji z api.
+Rządania do api w powyższym przykładzie wysyłamy na adres:
+
+```
+http://192.168.1.1/api-subiekt-gt/public/api/
+
+przykładowe wywołanie:
+
+http://192.168.1.1/api-subiekt-gt/public/api/document/get
+
+```
+
+Gdyby zaszła potrzeba użyć IIS-a jako serwera www to rządania bez modułu "rewrite" miałyby postać:
+
+```
+http://192.168.1.1/api-subiekt-gt/public/api?c=document/get
+```
 
 ## Dokumentacja API 
 
- Dokumentacja metod API: [Dokumentacja]()
+ Dokumentacja metod API: [Dokumentacja](docs/api.md)
 
 ## License
 
