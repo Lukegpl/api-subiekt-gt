@@ -10,12 +10,12 @@ use APISubiektGT\SubiektGT\SubiektObj;
 class Customer extends SubiektObj{	
 	protected $customerGt = false;	
 	protected $email;
-	protected $ref_id;
+	protected $ref_id = false;
 	protected $firstname;
 	protected $lastname;
 	protected $post_code;
 	protected $city;
-	protected $tax_id;
+	protected $tax_id = '';
 	protected $company_name ='';
 	protected $address;
 	protected $address_no;
@@ -28,12 +28,14 @@ class Customer extends SubiektObj{
 		parent::__construct($subiektGt, $customerDetail);
 		$this->excludeAttr('customerGt');
 
-		$symbol = '';
-		if(isset($customerDetail['ref_id'])){
-			$symbol = trim($customerDetail['ref_id']);
-		}
-		if($symbol!='' && $subiektGt->Kontrahenci->Istnieje($symbol)){
-			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($symbol);
+		if($this->ref_id && $subiektGt->Kontrahenci->Istnieje($this->ref_id)){
+			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->ref_id);
+			$this->getGtObject();
+			$this->is_exists = true;				
+		}		
+		
+		if(!$this->customerGt && $this->is_company && $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
+			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
 			$this->getGtObject();
 			$this->is_exists = true;				
 		}			
@@ -43,9 +45,10 @@ class Customer extends SubiektObj{
 		$this->customerGt->Symbol = $this->ref_id;		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
-			$this->customerGt->Nazwa = substr($this->company_name,0,100);
+			$this->customerGt->Nazwa = substr($this->company_name,0,50);
 			$this->customerGt->Osoba = 0;
-			$this->customerGt->NIP =  $this->tax_id;
+			$this->customerGt->NIP =  sprintf('%s',$this->tax_id);
+			$this->customerGt->Symbol = $this->customerGt->NIP;	
 
 		}else{
 			$this->customerGt->Osoba = 1;

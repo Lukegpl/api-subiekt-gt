@@ -30,12 +30,9 @@ class Order extends SubiektObj {
 		parent::__construct($subiektGt, $orderDetail);
 		$this->excludeAttr(array('orderGt','orderDetail','pay_type','create_product_if_not_exists'));
 
-		$symbol = '';
-		if(isset($orderDetail['order_ref'])){
-			$symbol = trim($orderDetail['order_ref']);
-		}
-		if($symbol!='' && $subiektGt->SuDokumentyManager->Istnieje($symbol)){
-			$this->orderGt = $subiektGt->SuDokumentyManager->Wczytaj($symbol);
+
+		if($this->order_ref !='' && $subiektGt->SuDokumentyManager->Istnieje($this->order_ref)){
+			$this->orderGt = $subiektGt->SuDokumentyManager->Wczytaj($this->order_ref);
 			$this->getGtObject();
 			$this->is_exists = true;			
 		}		
