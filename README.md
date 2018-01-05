@@ -38,7 +38,7 @@ http://192.168.1.1/api-subiekt-gt/public/setup
 
 Powyższe wywołanie uruchomi konfigurator api, który pomoże utworzyć plik konfiguracyjny do połączenia ze Sferą GT 
 oraz SQLServer-em.  Należy przygotować użytkownika oraz hasło do SQLServera dzięki któremu zostanie nawiązane połączenie z 
-bazą Subiekta. Jeśli była autentykacja windows trzeba utworzyć takiego użytkownika z dostępem do podmiotu. 
+bazą Subiekta. Jeśli była użyta autentykacja windows trzeba utworzyć użytkownika z dostępem do podmiotu. 
 Do testów można użyć danych admina "sa" lecz na produkcji nie zalecane. 
 
 Po konfiguracji należy jescze przeprowadzić test połączenia podając istniejący numer dokumentu sprzedaży z Subiekta. Np: "PA 13659/12/2017".
@@ -127,7 +127,7 @@ http://192.168.1.1/api-subiekt-gt/public/api?c=document/get
 
 ## Dokumentacja API 
 
- Dokumentacja metod API: [Dokumentacja](docs/api.md)
+ Dokumentacja metod API: [Dokumentacja](https://github.com/LukeOtdr/api-subiekt-gt/wiki)
 
 ## License
 
