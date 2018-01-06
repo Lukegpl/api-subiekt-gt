@@ -16,7 +16,7 @@ class Customer extends SubiektObj{
 	protected $post_code;
 	protected $city;
 	protected $tax_id = '';
-	protected $company_name ='';
+	protected $company_name = '';
 	protected $address;
 	protected $address_no;
 	protected $phone = false;
@@ -42,12 +42,12 @@ class Customer extends SubiektObj{
 	}
 
 	protected function setGtObject(){			
-		$this->customerGt->Symbol = $this->ref_id;		
+		$this->customerGt->Symbol = substr($this->ref_id,0,20);		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
 			$this->customerGt->Nazwa = substr($this->company_name,0,50);
 			$this->customerGt->Osoba = 0;
-			$this->customerGt->NIP =  sprintf('%s',$this->tax_id);
+			$this->customerGt->NIP =  substr(sprintf('%s',$this->tax_id),0,17);
 			$this->customerGt->Symbol = $this->customerGt->NIP;	
 
 		}else{
@@ -60,7 +60,7 @@ class Customer extends SubiektObj{
 		$this->customerGt->Miejscowosc = $this->city;
 		$this->customerGt->KodPocztowy = $this->post_code;
 		$this->customerGt->Ulica = $this->address;
-		$this->customerGt->NrDomu = substr($this->address_no,0,7);
+		$this->customerGt->NrDomu = substr($this->address_no,0,10);
 
 		if($this->phone){
 			if($this->customerGt->Telefony->Liczba==0){

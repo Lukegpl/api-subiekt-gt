@@ -14,7 +14,7 @@ class Product extends SubiektObj{
 	protected $price;
 	protected $name;	
 	protected $qty;	
-	protected $id_store = 0;	
+	protected $id_store = 1;	
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
@@ -40,7 +40,7 @@ class Product extends SubiektObj{
 		}else{
 			$this->productGt->Nazwa = $this->name;
 		}
-		$this->productGt->Symbol = $this->code;
+		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
 		$this->CenaKartotekowa = floatval($this->price);
 		$ean = sprintf('%d',trim($this->ean));
