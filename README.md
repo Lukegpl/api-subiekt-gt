@@ -29,7 +29,7 @@ Poniższy przykład przedstawia pobranie wersji developerskiej.
 create-project lukeotdr/api-subiekt-gt  --stability dev
 ```
 
-Paczkę umieszczamy tak aby serwer www miał możliwość uruchomienia plików PHP z katalogu public lub odpowiednio kinfigurujemy serwer www.
+Paczkę umieszczamy tak aby serwer www miał możliwość uruchomienia plików PHP z katalogu public lub odpowiednio konfigurujemy serwer www.
 Uruchamiamy konfigurację api poprzez przykładowe poniższe wywołanie:
 
 ```
@@ -41,7 +41,7 @@ oraz SQLServer-em.  Należy przygotować użytkownika oraz hasło do SQLServera 
 bazą Subiekta. Jeśli była użyta autentykacja windows trzeba utworzyć użytkownika z dostępem do podmiotu. 
 Do testów można użyć danych admina "sa" lecz na produkcji nie zalecane. 
 
-Po konfiguracji należy jescze przeprowadzić test połączenia podając istniejący numer dokumentu sprzedaży z Subiekta. Np: "PA 13659/12/2017".
+Po konfiguracji należy jeszcze przeprowadzić test połączenia podając istniejący numer dokumentu sprzedaży z Subiekta. Np: "PA 13659/12/2017".
 W odpowiedzi i poprawnego połączenia powinniśmy zobaczyć coś podobnego jak poniżej.
 
 Wysłane rządanie:
@@ -118,6 +118,9 @@ przykładowe wywołanie:
 http://192.168.1.1/api-subiekt-gt/public/api/document/get
 
 ```
+
+
+**UWAGA** - adres "setup-u" należy zabezpieczyć przed nie autoryzowanym dostępem np przez .htaccess dyrektywy allow deny. Można również przkopiować katalog w inne miejsce. 
 
 Gdyby zaszła potrzeba użyć IIS-a jako serwera www to rządania bez modułu "rewrite" miałyby postać:
 
