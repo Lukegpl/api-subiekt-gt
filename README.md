@@ -120,7 +120,7 @@ http://192.168.1.1/api-subiekt-gt/public/api/document/get
 ```
 
 
-**UWAGA** - adres "setup-u" należy zabezpieczyć przed nie autoryzowanym dostępem np przez .htaccess dyrektywy allow deny. Można również przkopiować katalog w inne miejsce. 
+**UWAGA** - adres "setup-u" należy zabezpieczyć przed nieautoryzowanym dostępem np przez .htaccess dyrektywy allow deny. Można również przkopiować katalog w inne miejsce. 
 
 Gdyby zaszła potrzeba użyć IIS-a jako serwera www to rządania bez modułu "rewrite" miałyby postać:
 
