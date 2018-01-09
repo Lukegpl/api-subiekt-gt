@@ -33,7 +33,9 @@ class Customer extends SubiektObj{
 			$this->getGtObject();
 			$this->is_exists = true;				
 		}		
-		
+		if($this->tax_id!=''){
+			$this->tax_id = str_replace('-','', $this->tax_id);
+		}
 		if(!$this->customerGt && $this->is_company && $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
 			$this->getGtObject();
