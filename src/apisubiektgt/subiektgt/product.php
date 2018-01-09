@@ -10,7 +10,7 @@ class Product extends SubiektObj{
 
 	protected $productGt = false;	
 	protected $ean = 0;
-	protected $code;
+	protected $code = '';
 	protected $price;
 	protected $name;	
 	protected $qty;	
@@ -20,12 +20,8 @@ class Product extends SubiektObj{
 		parent::__construct($subiektGt, $productDetail);
 		$this->excludeAttr('productGt');
 		
-		$symbol = '';
-		if(isset($productDetail['code'])){
-			$symbol = trim($productDetail['code']);
-		}
-		if($symbol!='' &&  $subiektGt->Towary->Istnieje($symbol)){
-			$this->productGt = $subiektGt->Towary->Wczytaj($symbol);			
+		if($this->code!='' &&  $subiektGt->Towary->Istnieje($this->code)){
+			$this->productGt = $subiektGt->Towary->Wczytaj($this->code);			
 			$this->is_exists = true;			
 			$this->getGtObject();
 		}		

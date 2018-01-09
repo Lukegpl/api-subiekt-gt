@@ -42,7 +42,7 @@ class Helper {
     if(is_string($value)){
 
 
-      $value = mb_convert_encoding($value,'ISO-8859-2','UTF-8');
+      $value = mb_convert_encoding(trim($value),'ISO-8859-2','UTF-8');
       //$keys = array_keys($iso_to_win);
       for($i=0;$i<strlen($value);$i++){
         $chr_no = ord($value[$i]);
