@@ -44,12 +44,9 @@ class Document extends SubiektObj {
 	public function __construct($subiektGt,$documentDetail = array()){
 		parent::__construct($subiektGt, $documentDetail);
 		$this->excludeAttr(array('documentGt','documentDetail','doc_types'));		
-		$symbol = '';
-		if(isset($documentDetail['doc_ref'])){
-			$symbol = trim($documentDetail['doc_ref']);
-		}
-		if($symbol!='' && $subiektGt->SuDokumentyManager->Istnieje($symbol)){
-			$this->documentGt = $subiektGt->SuDokumentyManager->Wczytaj($symbol);			
+
+		if($this->doc_ref!='' && $subiektGt->SuDokumentyManager->Istnieje($this->doc_ref)){
+			$this->documentGt = $subiektGt->SuDokumentyManager->Wczytaj($this->doc_ref);			
 			$this->getGtObject();
 			$this->is_exists = true;			
 		}		
