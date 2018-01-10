@@ -28,19 +28,29 @@ class Customer extends SubiektObj{
 		parent::__construct($subiektGt, $customerDetail);
 		$this->excludeAttr('customerGt');
 
+		//Wyszukanie po symbolu
 		if($this->ref_id && $subiektGt->Kontrahenci->Istnieje($this->ref_id)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->ref_id);
 			$this->getGtObject();
 			$this->is_exists = true;				
-		}		
-		if($this->tax_id!=''){
-			$this->tax_id = str_replace('-','', $this->tax_id);
-		}
+		}	
+
+		//Wyszukanie po wprowadzonym NIP-e	
 		if(!$this->customerGt && $this->is_company && $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
 			$this->getGtObject();
 			$this->is_exists = true;				
-		}			
+		}	
+
+		//Wyszukanie po NIP-e wycięcie znaków "-"	
+		if(!$this->customerGt && $this->is_company && $this->tax_id!=''){
+			$this->tax_id = str_replace('-','', $this->tax_id);
+			if( $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
+				$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
+				$this->getGtObject();
+				$this->is_exists = true;				
+			}		
+		}
 	}
 
 	protected function setGtObject(){			
