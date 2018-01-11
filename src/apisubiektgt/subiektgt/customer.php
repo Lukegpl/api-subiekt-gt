@@ -42,9 +42,9 @@ class Customer extends SubiektObj{
 			$this->is_exists = true;				
 		}	
 
-		//Wyszukanie po NIP-e wycięcie znaków "-"	
+		//Wyszukanie po NIP-e wycięcie znaków "- "	
 		if(!$this->customerGt && $this->is_company && $this->tax_id!=''){
-			$this->tax_id = str_replace('-','', $this->tax_id);
+			$this->tax_id = preg_replace('/([\- ])/','', $this->tax_id);
 			if( $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
 				$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
 				$this->getGtObject();
