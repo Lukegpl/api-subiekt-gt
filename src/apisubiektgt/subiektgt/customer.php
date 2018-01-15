@@ -18,7 +18,7 @@ class Customer extends SubiektObj{
 	protected $tax_id = '';
 	protected $company_name = '';
 	protected $address;
-	protected $address_no;
+	protected $address_no = '';
 	protected $phone = false;
 	protected $is_company = false;
 	
@@ -27,6 +27,9 @@ class Customer extends SubiektObj{
 	public function __construct($subiektGt,$customerDetail = array()){						
 		parent::__construct($subiektGt, $customerDetail);
 		$this->excludeAttr('customerGt');
+
+		//Wyszukanie po NIP-e wycięcie znaków "- "	
+		$this->tax_id = preg_replace('/([\- ])/','', $this->tax_id);	
 
 		//Wyszukanie po symbolu
 		if($this->ref_id && $subiektGt->Kontrahenci->Istnieje($this->ref_id)){
@@ -41,10 +44,8 @@ class Customer extends SubiektObj{
 			$this->getGtObject();
 			$this->is_exists = true;				
 		}	
-
-		//Wyszukanie po NIP-e wycięcie znaków "- "	
+		
 		if(!$this->customerGt && $this->is_company && $this->tax_id!=''){
-			$this->tax_id = preg_replace('/([\- ])/','', $this->tax_id);
 			if( $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
 				$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
 				$this->getGtObject();
@@ -57,7 +58,7 @@ class Customer extends SubiektObj{
 		$this->customerGt->Symbol = substr($this->ref_id,0,20);		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
-			$this->customerGt->Nazwa = substr($this->company_name,0,50);
+			$this->customerGt->Nazwa = mb_substr($this->company_name,0,50);
 			$this->customerGt->Osoba = 0;
 			$this->customerGt->NIP =  substr(sprintf('%s',$this->tax_id),0,17);
 			$this->customerGt->Symbol = $this->customerGt->NIP;	
@@ -71,8 +72,8 @@ class Customer extends SubiektObj{
 		$this->customerGt->Email = $this->email;
 		$this->customerGt->Miejscowosc = $this->city;
 		$this->customerGt->KodPocztowy = $this->post_code;
-		$this->customerGt->Ulica = $this->address;
-		$this->customerGt->NrDomu = substr($this->address_no,0,10);
+		$this->customerGt->Ulica = mb_substr($this->address,0,60);
+		$this->customerGt->NrDomu = mb_substr($this->address_no,0,10);
 
 		if($this->phone){
 			if($this->customerGt->Telefony->Liczba==0){

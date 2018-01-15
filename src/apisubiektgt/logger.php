@@ -17,8 +17,9 @@ class Logger {
 	}
 
 	public function log($type,$message,$source,$line){
-		$line = date("Y-m-d H:i:s"). " Line: {$line}, {$source}: $message\n";		
-		file_put_contents("{$this->log_path}{$type}.log",$line,FILE_APPEND);
+		$line = date("Y-m-d H:i:s"). " Line: {$line}, {$source}: $message\n";
+		$date = date('y_m_d');	
+		file_put_contents("{$this->log_path}{$type}_{$date}.log",$line,FILE_APPEND);
 	}
 }
 ?>
