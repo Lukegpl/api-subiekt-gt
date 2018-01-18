@@ -58,7 +58,7 @@ class Customer extends SubiektObj{
 		$this->customerGt->Symbol = substr($this->ref_id,0,20);		
 		if($this->is_company){			
 			$this->customerGt->NazwaPelna = $this->company_name;
-			$this->customerGt->Nazwa = mb_substr($this->company_name,0,50);
+			$this->customerGt->Nazwa = mb_substr($this->company_name,0,40);
 			$this->customerGt->Osoba = 0;
 			$this->customerGt->NIP =  substr(sprintf('%s',$this->tax_id),0,17);
 			$this->customerGt->Symbol = $this->customerGt->NIP;	

@@ -36,6 +36,7 @@ class Product extends SubiektObj{
 		}else{
 			$this->productGt->Nazwa = $this->name;
 		}
+		$this->productGt->Opis = $this->name;
 		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
 		$this->CenaKartotekowa = floatval($this->price);
