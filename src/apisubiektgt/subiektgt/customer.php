@@ -72,8 +72,8 @@ class Customer extends SubiektObj{
 		$this->customerGt->Email = $this->email;
 		$this->customerGt->Miejscowosc = $this->city;
 		$this->customerGt->KodPocztowy = $this->post_code;
-		$this->customerGt->Ulica = mb_substr($this->address,0,60);
-		$this->customerGt->NrDomu = mb_substr($this->address_no,0,10);
+		$this->customerGt->Ulica = substr($this->address,0,60);
+		$this->customerGt->NrDomu = substr($this->address_no,0,10);
 
 		if($this->phone){
 			if($this->customerGt->Telefony->Liczba==0){
