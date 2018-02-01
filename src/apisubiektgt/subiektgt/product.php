@@ -14,6 +14,7 @@ class Product extends SubiektObj{
 	protected $price;
 	protected $name;	
 	protected $qty;	
+	protected $supplier_code = '';
 	protected $id_store = 1;	
 
 	public function __construct($subiektGt,$productDetail = array()){		
@@ -34,12 +35,15 @@ class Product extends SubiektObj{
 				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
 			}
 		}else{
-			$this->productGt->Nazwa = $this->name;
+			$this->productGt->Nazwa =  substr("{$this->name}",0,50);
 		}
 		$this->productGt->Opis = $this->name;
 		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
-		$this->CenaKartotekowa = floatval($this->price);
+		$this->productGt->CenaKartotekowa = floatval($this->price);
+		if(strlen($this->supplier_code)>0){
+			 $this->productGt->TowarSymbolUDostawcy = $this->supplier_code;
+		}
 		$ean = sprintf('%d',trim($this->ean));
 		if(!$this->is_exists && $ean>0){
 			$this->productGt->KodyKreskowe->Dodaj($ean);
