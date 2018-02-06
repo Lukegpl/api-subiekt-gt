@@ -14,6 +14,7 @@ class Product extends SubiektObj{
 	protected $price;
 	protected $name;	
 	protected $qty;	
+	protected $supplier_code = '';
 	protected $id_store = 1;	
 
 	public function __construct($subiektGt,$productDetail = array()){		
@@ -34,12 +35,18 @@ class Product extends SubiektObj{
 				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
 			}
 		}else{
-			$this->productGt->Nazwa = $this->name;
+			$this->productGt->Nazwa =  substr("{$this->name}",0,50);
 		}
 		$this->productGt->Opis = $this->name;
 		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
-		$this->CenaKartotekowa = floatval($this->price);
+		if($this->productGt->Ceny->Liczba>0){
+			$this->productGt->Ceny->Element(1)->Brutto = floatval($this->price);			
+		}
+		//$this->productGt->CenaKartotekowa = floatval($this->price);
+		if(strlen($this->supplier_code)>0){
+			 $this->productGt->SymbolUDostawcy = substr(sprintf('%s',$this->supplier_code),0,20);
+		}
 		$ean = sprintf('%d',trim($this->ean));
 		if(!$this->is_exists && $ean>0){
 			$this->productGt->KodyKreskowe->Dodaj($ean);
@@ -54,6 +61,7 @@ class Product extends SubiektObj{
 		$this->gt_id = $this->productGt->Identyfikator;
 		$this->name = $this->productGt->Nazwa;		
 		$this->code = $this->productGt->Symbol;
+		$this->supplier_code = $this->productGt->SymbolUDostawcy;
 		if($this->productGt->KodyKreskowe->Liczba>0){
 			$this->ean = $this->productGt->KodyKreskowe->Element(1);
 		}
@@ -85,6 +93,16 @@ class Product extends SubiektObj{
 		$this->productGt->Zapisz();
 		Logger::getInstance()->log('api','Utworzono produkt: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array('gt_id'=>$this->productGt->Identyfikator);
+	}
+
+	public function setProductSupplierCode($supplier_code){
+		if(!$this->productGt){
+			return false;
+		}
+		$this->productGt->SymbolUDostawcy = substr(sprintf('%s',$supplier_code),0,20);
+		$this->productGt->Zapisz();
+		Logger::getInstance()->log('api','Zaktualizowano kod dostawcy produktu: '.$supplier_code,__CLASS__.'->'.__FUNCTION__,__LINE__);
+		return true;	
 	}
 
 	public function update(){

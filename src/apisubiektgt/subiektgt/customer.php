@@ -65,8 +65,8 @@ class Customer extends SubiektObj{
 
 		}else{
 			$this->customerGt->Osoba = 1;
-			$this->customerGt->OsobaImie = $this->firstname;			
-			$this->customerGt->OsobaNazwisko = $this->lastname;
+			$this->customerGt->OsobaImie = substr($this->firstname,0,20);			
+			$this->customerGt->OsobaNazwisko = substr($this->lastname,0,50);
 			$this->customerGt->NazwaPelna = $this->firstname.' '.$this->lastname;
 		}		
 		$this->customerGt->Email = $this->email;
