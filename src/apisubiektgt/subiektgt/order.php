@@ -45,8 +45,10 @@ class Order extends SubiektObj {
 		if(!$p->isExists()){
 			return false;
 		}
-
 		$p_data = $p->get();
+		if(isset($product['supplier_code']) && strlen($product['supplier_code'])>0){
+			$p->setProductSupplierCode($product['supplier_code']);
+		}
 		//var_dump($p_data);
 		$position = $this->orderGt->Pozycje->Dodaj($p_data['code']);
 		$position->IloscJm = $product['qty'];				
