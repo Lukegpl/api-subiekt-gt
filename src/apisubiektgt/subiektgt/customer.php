@@ -28,9 +28,9 @@ class Customer extends SubiektObj{
 		parent::__construct($subiektGt, $customerDetail);
 		$this->excludeAttr('customerGt');
 
-		//Wyszukanie po NIP-e wycięcie znaków "- "	
-		$this->tax_id = preg_replace('/([\- ])/','', $this->tax_id);	
-
+		// NIP-e spacji "- "	
+		$this->tax_id = preg_replace('/([ ])/','', $this->tax_id);
+	
 		//Wyszukanie po symbolu
 		if($this->ref_id && $subiektGt->Kontrahenci->Istnieje($this->ref_id)){
 			$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->ref_id);
@@ -45,6 +45,9 @@ class Customer extends SubiektObj{
 			$this->is_exists = true;				
 		}	
 		
+		//Wyszukanie po NIP-e wycięcie znaków "-"	
+		$this->tax_id = preg_replace('/([\-])/','', $this->tax_id);
+
 		if(!$this->customerGt && $this->is_company && $this->tax_id!=''){
 			if( $subiektGt->Kontrahenci->Istnieje($this->tax_id)){
 				$this->customerGt = $subiektGt->Kontrahenci->Wczytaj($this->tax_id);
