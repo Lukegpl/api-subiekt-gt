@@ -89,7 +89,7 @@ try{
 }catch(Exception $e){
 	$json_response['state'] = 'fail';
 	$json_response['message'] = $e->getMessage();
-	$json_response['obj_dump'] = $obj;		
+	$json_response['obj_dump'] = print_r($obj,true);		
 	if(isset($json_request['data'])){
 		$json_response['data'] = $json_request['data'];
 	}

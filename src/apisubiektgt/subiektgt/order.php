@@ -50,7 +50,7 @@ class Order extends SubiektObj {
 			$p->setProductSupplierCode($product['supplier_code']);
 		}
 		//var_dump($p_data);
-		$position = $this->orderGt->Pozycje->Dodaj($p_data['code']);
+		$position = $this->orderGt->Pozycje->Dodaj(sprintf('%s',$p_data['code']));
 		$position->IloscJm = $product['qty'];				
 		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);
 		if(floatval($product['price_before_discount'])>0){
@@ -108,7 +108,13 @@ class Order extends SubiektObj {
 			$selling_doc->ZapiszSymulacja();
 		}catch(Exception $e){
 			if($selling_doc->PozycjeBrakujace->Liczba()){
-				throw new Exception('Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie!');
+					return array(
+							'doc_ref' => $selling_doc->NumerPelny,
+							'doc_status' => 'warning',
+							'message' => 'Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie.'
+					);
+			}else{
+				throw new Exception('Nie można utworzyć dokumentu sprzedaży. '.$this->toUtf8($e->getMessage()));
 			}
 		}
 		if($this->customer['is_company']== false){
@@ -206,7 +212,8 @@ class Order extends SubiektObj {
 			}
 		}
 
-		$this->setGtObject();			
+		$this->setGtObject();	
+		$this->orderGt->LiczonyOdCenBrutto = true;		
 		$this->orderGt->Przelicz();
 		$this->orderGt->Zapisz();
 		Logger::getInstance()->log('api','Utworzono zamówienie od klienta: '.$this->orderGt->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);	
