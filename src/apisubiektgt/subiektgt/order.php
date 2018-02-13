@@ -4,6 +4,7 @@ use COM;
 use Exception;
 use APISubiektGT\Logger;
 use APISubiektGT\MSSql;
+use APISubiektGT\Helper;
 use APISubiektGT\SubiektGT\SubiektObj;
 use APISubiektGT\SubiektGT\Product;
 use APISubiektGT\SubiektGT\Customer;
@@ -50,12 +51,15 @@ class Order extends SubiektObj {
 			$p->setProductSupplierCode($product['supplier_code']);
 		}
 		//var_dump($p_data);
-		$position = $this->orderGt->Pozycje->Dodaj(sprintf('%s',$p_data['code']));
+		$code = sprintf('%s',$p_data['code']);
+
+		$position = $this->orderGt->Pozycje->Dodaj($code);
 		$position->IloscJm = $product['qty'];				
 		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);
 		if(floatval($product['price_before_discount'])>0){
 			$position->WartoscBruttoPrzedRabatem = floatval($product['price_before_discount']) * intval($product['qty']);
 		}
+		Logger::getInstance()->log('api','Dodaje pozycje o kodzie: '.$code ,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return $position;
 	}
 
@@ -69,7 +73,11 @@ class Order extends SubiektObj {
 			case 'cart' : $this->orderGt->PlatnoscKartaKwota = floatval($this->amount); break;
 			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = floatval($this->amount); break;
 			case 'credit' : $this->orderGt->PlatnoscKredytKwota = floatval($this->amount); break;
+			default:
+					$this->orderGt->PlatnoscPrzelewKwota = floatval($this->amount);
+			break;
 		}
+		$this->orderGt->LiczonyOdCenBrutto = true;	
 
 	}
 
@@ -212,9 +220,10 @@ class Order extends SubiektObj {
 			}
 		}
 
-		$this->setGtObject();	
-		$this->orderGt->LiczonyOdCenBrutto = true;		
 		$this->orderGt->Przelicz();
+		$this->amount = $this->orderGt->WartoscBrutto;
+		$this->orderGt->Wystawil = Helper::toWin($this->cfg->getIdPerson());
+		$this->setGtObject();		
 		$this->orderGt->Zapisz();
 		Logger::getInstance()->log('api','Utworzono zamówienie od klienta: '.$this->orderGt->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);	
 		return array(

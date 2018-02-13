@@ -10,8 +10,9 @@ abstract class SubiektObj{
 	protected $subiektGt = false;
 	protected $is_exists = false;
 	protected $gt_id = false;
+	protected $cfg = false;
 	protected $exclude_attibs = array('subiektGt',
-							'exclude_attibs',
+							'exclude_attibs','cfg'
 							);	
 
 	public function __construct($subiektGt, $objDetail = array()){
@@ -34,6 +35,10 @@ abstract class SubiektObj{
 		}else{
 			$this->exclude_attibs = array_merge($this->exclude_attibs,array($name));
 		}
+	}
+
+	public function setCfg($cfg){
+		$this->cfg = $cfg;
 	}
 
 	abstract protected function setGtObject();

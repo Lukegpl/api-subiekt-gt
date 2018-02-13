@@ -6,6 +6,7 @@ use APISubiektGT\SubiektGT;
 
 require_once(dirname(__FILE__).'/../init.php');
 $json_response = array();
+$obj = false;
 Logger::getInstance()->log('api','Request start: '.$_SERVER['REMOTE_ADDR'],'',__LINE__);
 
 header("Content-Type: application/json;charset=utf-8");
@@ -74,6 +75,7 @@ try{
 
 		//Create API class object 
 		$obj = new $class($subiektGtCom,$json_request['data']);
+		$obj->setCfg($cfg);
 		$reflection = new ReflectionMethod($obj , $method);
 		if(!$reflection->isPublic()){
 			throw new Exception("Wywołanie metody: {$method} jest zabronione!");

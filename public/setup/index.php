@@ -18,7 +18,7 @@ require_once(dirname(__FILE__).'/../init.php');
 	//Config object	
 	$cfg = new Config(CONFIG_INI_FILE);
 	$cfg->load();
-	
+
 	//Save new Configuration
 	if(Helper::getIsset('save')){
 		$cfg->setServer(Helper::getValue('server'));
@@ -26,6 +26,7 @@ require_once(dirname(__FILE__).'/../init.php');
 		$cfg->setDbUserPass(Helper::getValue('dbpass'));
 		$cfg->setDatabase(Helper::getValue('database'));
 		$cfg->setNewProductPrefix(Helper::getValue('newprefix'));
+		$cfg->setIdPerson(Helper::getValue('id_person'));
 		$cfg->save();
 	}
 	
@@ -42,6 +43,7 @@ require_once(dirname(__FILE__).'/../init.php');
 		$cfg_values['dbpassword'] = $cfg->getDbUserPass();
 		$cfg_values['database'] = $cfg->getDatabase();
 		$cfg_values['new_product_prefix'] = $cfg->getNewProductPrefix();
+		$cfg_values['id_person'] = $cfg->getIdPerson();
 		if(strlen($cfg->getAPIKey())==0){
 			$cfg->newAPIKey();
 			$cfg->save();
@@ -173,6 +175,12 @@ require_once(dirname(__FILE__).'/../init.php');
       <div class="one-half column">
      		<label for="database">Twój klucz API</label>
           <input class="u-full-width" id="database" type="text" disabled="true" value="<?php echo  $cfg_values['api_key']; ?>">
+      </div>  
+  </div> 
+    <div class="row">
+  	  <div class="one-half column">
+     		<label for="newprefix">Domyślne dane osoby wystawiającego dokumenty</label>
+          <input class="u-full-width" name="id_person" type="text" placeholder="Jan Kowalski" value="<?php echo  $cfg_values['id_person']; ?>">
       </div>  
   </div>  
   <div class="row">

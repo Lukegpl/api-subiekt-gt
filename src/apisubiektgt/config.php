@@ -11,6 +11,7 @@ class Config{
 	protected $_ini_file;
 	protected $api_key;
 	protected $new_product_prefix = '';
+	protected $id_person;
 
 
 	/**
@@ -89,6 +90,10 @@ class Config{
 	}
 
 
+	public function getIdPerson(){
+		return $this->id_person;
+	}
+
 	public function newAPIKey(){
 		$this->api_key = $this->generateAPIKey();
 	}
@@ -122,6 +127,9 @@ class Config{
 	}
 
 
+	public function setIdPerson($id_person){
+		$this->id_person = $id_person;
+	}
 
 	public function setDatabase($database){
 		$this->database = $database;
