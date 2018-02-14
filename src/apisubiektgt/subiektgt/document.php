@@ -22,6 +22,7 @@ class Document extends SubiektObj {
 	protected $state = -1;
 	protected $date_of_delivery = '';		
 	protected $documentDetail= array();
+	protected $order_processing = 0;
 	protected $doc_types = array(1=>'FZ',
 						 2=>'FS',
 						 5=>'KFZ',
@@ -86,7 +87,8 @@ class Document extends SubiektObj {
 				 'doc_type' => $this->doc_type,
 				 'state' => $this->state,
 				 'accounting_state' => $this->accounting_state,
-				 'fiscal_state' => $this->fiscal_state,				 
+				 'fiscal_state' => $this->fiscal_state,
+				 'order_processing' => $this->order_processing,				 
 				);
 	}
 
@@ -107,6 +109,7 @@ class Document extends SubiektObj {
 		$this->state = $o['dok_Status'];				
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
+		$this->order_processing = $o['dok_PrzetworzonoZKwZD'];
 				
 		if(!is_null($this->documentGt->KontrahentId)){
 			$customer = Customer::getCustomerById($this->documentGt->KontrahentId);
