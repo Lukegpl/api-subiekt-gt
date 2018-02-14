@@ -96,7 +96,12 @@ class Order extends SubiektObj {
 
 	public function makeSaleDoc(){
 		if(!$this->is_exists){
-			throw new Exception('Nie odnaleziono dokumentu: '.$this->order_ref);
+					return array(
+							'doc_ref' => $this->order_ref,
+							'doc_state' => 'warning',
+							'doc_state_code' => 1,
+							'message' => 'Nie odnaleziono dokumentu'
+					);		
 		}
 		
 		if($this->customer['is_company'] == true){
@@ -119,7 +124,8 @@ class Order extends SubiektObj {
 			if($selling_doc->PozycjeBrakujace->Liczba()){
 					return array(
 							'doc_ref' => $selling_doc->NumerPelny,
-							'doc_status' => 'warning',
+							'doc_state' => 'warning',
+							'doc_state_code' => 2,
 							'message' => 'Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie.'
 					);
 			}else{
