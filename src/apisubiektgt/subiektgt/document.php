@@ -23,6 +23,8 @@ class Document extends SubiektObj {
 	protected $date_of_delivery = '';		
 	protected $documentDetail= array();
 	protected $order_processing = 0;
+	protected $id_flag = 0;
+	protected $flag_txt = '';
 	protected $doc_types = array(1=>'FZ',
 						 2=>'FS',
 						 5=>'KFZ',
@@ -88,7 +90,9 @@ class Document extends SubiektObj {
 				 'state' => $this->state,
 				 'accounting_state' => $this->accounting_state,
 				 'fiscal_state' => $this->fiscal_state,
-				 'order_processing' => $this->order_processing,				 
+				 'order_processing' => $this->order_processing,	
+				 'id_flag'	 	=> $this->id_flag,
+				 'flag_txt'		=> $this->flag_txt		 
 				);
 	}
 
@@ -110,6 +114,8 @@ class Document extends SubiektObj {
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		$this->order_processing = $o['dok_PrzetworzonoZKwZD'];
+		$this->id_flag = $o['flg_Id'];
+		$this->flag_txt = $o['flg_Text'];
 				
 		if(!is_null($this->documentGt->KontrahentId)){
 			$customer = Customer::getCustomerById($this->documentGt->KontrahentId);
@@ -135,7 +141,10 @@ class Document extends SubiektObj {
 	}
 
 	protected function getDocumentById($id){
-		$sql = "SELECT * FROM dok__Dokument WHERE dok_Id = {$id}";				
+		$sql = "SELECT * FROM dok__Dokument as d
+					LEFT JOIN fl_Wartosc as fw ON (fw.flw_IdObiektu = d.dok_Id)
+					LEFT JOIN fl__Flagi as f ON (f.flg_Id = fw.flw_IdFlagi)
+				WHERE dok_Id = {$id}";				
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];
 	}
@@ -149,7 +158,7 @@ class Document extends SubiektObj {
 
 
 	public function add(){	
-		return false;
+		return true;
 	}
 
 	public function update(){
