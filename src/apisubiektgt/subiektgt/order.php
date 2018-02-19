@@ -116,7 +116,7 @@ class Order extends SubiektObj {
 		try{
 			$selling_doc->NaPodstawie(intval($this->gt_id));
 		}catch(Exception $e){			
-			throw new Exception('Nie można utworzyć dokumentu sprzedaży. '.$this->toUtf8($e->getMessage()));
+			throw new Exception('Nie można utworzyć dokumentu sprzedaży. Dokument: '.$this->order_ref.'. '.$this->toUtf8($e->getMessage()));
 		}
 		try{
 			$selling_doc->ZapiszSymulacja();
@@ -129,7 +129,7 @@ class Order extends SubiektObj {
 							'message' => 'Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie.'
 					);
 			}else{
-				throw new Exception('Nie można utworzyć dokumentu sprzedaży. '.$this->toUtf8($e->getMessage()));
+				throw new Exception('Nie można utworzyć dokumentu sprzedaży. Dokument: '.$this->order_ref.'. '.$this->toUtf8($e->getMessage()));
 			}
 		}
 		if($this->customer['is_company']== false){
@@ -188,6 +188,16 @@ class Order extends SubiektObj {
 		return $data[0];
 	}
 
+
+	protected function getOrderAmountById($id){
+		$sql = "SELECT dok_WartBrutto FROM vwDok4ZamGrid WHERE dok_Id = {$id}";		
+		$data = MSSql::getInstance()->query($sql);
+		if(!is_array($data)){
+			return false;
+		}
+		return $data[0]['dok_WartBrutto'];
+	}
+
 	protected function getPositionsByOrderId($id){
 		$sql = "SELECT * FROM dok_Pozycja
 			   WHERE ob_DokHanId = {$id}";		
@@ -235,7 +245,8 @@ class Order extends SubiektObj {
 		$this->orderGt->Zapisz();
 		Logger::getInstance()->log('api','Utworzono zamówienie od klienta: '.$this->orderGt->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);	
 		return array(
-			'order_ref' => $this->orderGt->NumerPelny
+			'order_ref' => $this->orderGt->NumerPelny,
+			'order_amount' => $this->getOrderAmountById($this->orderGt->Identyfikator)
 		);
 	}
 
