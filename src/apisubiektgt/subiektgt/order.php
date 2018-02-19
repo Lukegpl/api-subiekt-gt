@@ -137,6 +137,7 @@ class Order extends SubiektObj {
 		}
 		$selling_doc->Podtytul = $this->orderGt->Tytul;//.'/'.$this->orderGt->order_ref;
 		$selling_doc->Wystawil = Helper::toWin($this->cfg->getIdPerson());
+		$selling_doc->LiczonyOdCenBrutto = true;
 		$selling_doc->Zapisz();			
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(
