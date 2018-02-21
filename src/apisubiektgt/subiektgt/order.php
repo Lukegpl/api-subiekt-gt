@@ -26,6 +26,7 @@ class Order extends SubiektObj {
 	protected $pay_type = 'transfer';
 	protected $create_product_if_not_exists = false;
 	protected $orderDetail= array();
+	protected $order_processing = false;
 
 
 	public function __construct($subiektGt,$orderDetail = array()){
@@ -121,7 +122,7 @@ class Order extends SubiektObj {
 		try{
 			$selling_doc->ZapiszSymulacja();
 		}catch(Exception $e){
-			if($selling_doc->PozycjeBrakujace->Liczba()){
+			if($selling_doc->PozycjeBrakujace->Liczba()>0){
 					return array(
 							'doc_ref' => $selling_doc->NumerPelny,
 							'doc_state' => 'warning',
@@ -137,6 +138,7 @@ class Order extends SubiektObj {
 		}
 		$selling_doc->Podtytul = $this->orderGt->Tytul;//.'/'.$this->orderGt->order_ref;
 		$selling_doc->Wystawil = Helper::toWin($this->cfg->getIdPerson());
+		$selling_doc->LiczonyOdCenBrutto = true;
 		$selling_doc->Zapisz();			
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(
@@ -160,6 +162,7 @@ class Order extends SubiektObj {
 		$this->state = $o['dok_Status'];				
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
+		$this->order_processing = $o['ss_PrzetworzonoZKwZD'];
 		
 		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);		
 		$this->customer = $customer;
@@ -203,6 +206,16 @@ class Order extends SubiektObj {
 			   WHERE ob_DokHanId = {$id}";		
 		$data = MSSql::getInstance()->query($sql);
 		return $data;
+	}
+
+	
+
+	public function getState(){
+		return array('order_ref'=>$this->order_ref,
+				 'is_exists' => $this->is_exists,
+				 'state' => $this->state,				 
+				 'order_processing' => $this->order_processing,	
+				);
 	}
 
 
