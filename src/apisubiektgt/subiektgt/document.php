@@ -156,6 +156,14 @@ class Document extends SubiektObj {
 		return $data;
 	}
 
+	public function delete(){
+		if(!$this->documentGt){
+			return false;
+		}
+
+		$this->documentGt->Usun(false);	
+		return array('doc_ref'=>$this->doc_ref);
+	}
 
 	public function add(){	
 		return true;
