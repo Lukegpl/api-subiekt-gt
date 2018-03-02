@@ -1,6 +1,2 @@
 RewriteEngine on
-RewriteRule ^(css|img|fonts|js|font)($|/) - [L]
-RewriteRule ^(.*)/css/(.*)$  /css/$2 [QSA,L,E]
-RewriteRule ^(.*)/js/(.*)$ /js/$2 [QSA,L,E]
-RewriteRule ^(.*)/fonts/(.*)$ /fonts/$2 [QSA,L,E]
 RewriteRule ^(.*)$ index.php?c=$1 [QSA,L,E]

@@ -59,7 +59,7 @@ class Customer extends SubiektObj{
 
 	protected function setGtObject(){			
 		$this->customerGt->Symbol = substr($this->ref_id,0,20);		
-		if($this->is_company){			
+		if($this->is_company && strlen($this->tax_id)>=10){			
 			$this->customerGt->NazwaPelna = $this->company_name;
 			$this->customerGt->Nazwa = mb_substr($this->company_name,0,40);
 			$this->customerGt->Osoba = 0;
