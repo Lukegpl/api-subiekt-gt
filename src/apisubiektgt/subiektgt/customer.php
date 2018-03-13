@@ -74,7 +74,7 @@ class Customer extends SubiektObj{
 		}		
 		$this->customerGt->Email = $this->email;
 		$this->customerGt->Miejscowosc = $this->city;
-		$this->customerGt->KodPocztowy = $this->post_code;
+		$this->customerGt->KodPocztowy = substr($this->post_code,0,6);
 		$this->customerGt->Ulica = substr($this->address,0,60);
 		$this->customerGt->NrDomu = substr($this->address_no,0,10);
 
