@@ -12,9 +12,12 @@ class Product extends SubiektObj{
 	protected $ean = 0;
 	protected $code = '';
 	protected $price;
+	protected $wholesale_price = 0;
 	protected $name;	
 	protected $qty;	
 	protected $supplier_code = '';
+	protected $supplier_id = '';
+	protected $time_of_delivery = 0;
 	protected $id_store = 1;	
 
 	public function __construct($subiektGt,$productDetail = array()){		
@@ -40,10 +43,22 @@ class Product extends SubiektObj{
 		$this->productGt->Opis = $this->name;
 		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
+		$this->productGt->CzasDostawy = $this->time_of_delivery;
+		if($this->supplier_id != ''){
+			$this->productGt->DostawcaId = $this->supplier_id;
+		}
+		//cena detaliczna
 		if($this->productGt->Ceny->Liczba>0){
 			$this->productGt->Ceny->Element(1)->Brutto = floatval($this->price);			
 		}
-		//$this->productGt->CenaKartotekowa = floatval($this->price);
+		
+		//cena hurtowa
+		if($this->productGt->Ceny->Liczba>1 && $this->wholesale_price>0){
+			$this->productGt->Ceny->Element(2)->Netto = floatval($this->wholesale_price);			
+		}
+
+
+
 		if(strlen($this->supplier_code)>0){
 			 $this->productGt->SymbolUDostawcy = substr(sprintf('%s',$this->supplier_code),0,20);
 		}
@@ -61,6 +76,8 @@ class Product extends SubiektObj{
 		$this->gt_id = $this->productGt->Identyfikator;
 		$this->name = $this->productGt->Nazwa;		
 		$this->code = $this->productGt->Symbol;
+		$this->time_of_delivery = $this->productGt->CzasDostawy;
+		$this->supplier_id = $this->productGt->DostawcaId;
 		$this->supplier_code = $this->productGt->SymbolUDostawcy;
 		if($this->productGt->KodyKreskowe->Liczba>0){
 			$this->ean = $this->productGt->KodyKreskowe->Element(1);
@@ -68,6 +85,11 @@ class Product extends SubiektObj{
 		if($this->productGt->Ceny->Liczba>0){
 			$prices = $this->productGt->Ceny->Element(1);
 			$this->price = floatval($prices->Brutto);			
+		}
+
+		if($this->productGt->Ceny->Liczba>1){
+			$prices = $this->productGt->Ceny->Element(2);
+			$this->wholesale_price = floatval($prices->Netto);			
 		}
 		$qty = $this->getQty();
 		$this->qty = intval($qty['Dostepne']);
