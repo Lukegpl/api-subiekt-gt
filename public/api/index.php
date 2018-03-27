@@ -95,7 +95,7 @@ try{
 	if(isset($json_request['data'])){
 		$json_response['data'] = $json_request['data'];
 	}
-	Logger::getInstance()->log('api_error',Helper::toUtf8($e->getMessage()),$e->getFile(),$e->getLine());		
+	Logger::getInstance()->log('api_error',Helper::toWin($e->getMessage()),$e->getFile(),$e->getLine());		
 }
 
 $json_string = json_encode($json_response,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
