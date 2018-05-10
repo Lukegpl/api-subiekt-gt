@@ -36,6 +36,8 @@ class Product extends SubiektObj{
 			$new_prefix = SubiektGT::getInstance()->getConfig()->getNewProductPrefix();
 			if(strlen($new_prefix)>0){				
 				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
+			}else{
+				$this->productGt->Nazwa = substr("{$this->name}",0,50);
 			}
 		}else{
 			$this->productGt->Nazwa =  substr("{$this->name}",0,50);
