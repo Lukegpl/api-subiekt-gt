@@ -5,6 +5,7 @@ use COM;
 use APISubiektGT\Logger;
 use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
+use Exception;
 
 
 class Customer extends SubiektObj{	
