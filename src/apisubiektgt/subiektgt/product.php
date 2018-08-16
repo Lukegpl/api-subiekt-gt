@@ -109,19 +109,20 @@ class Product extends SubiektObj{
 	public function getQtysByCode(){
 		$qtys = array();
 		foreach($this->products_qtys as $pq){
+		$code = $pq['code'];
 		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available  FROM vwTowar LEFT JOIN 
 			tw_KodKreskowy ON kk_IdTowar = tw_Id 
-			WHERE st_MagId = '.intval($this->id_store).' AND tw_Symbol = \''.$pq.'\'';
+			WHERE st_MagId = '.intval($pq['id_store']).' AND tw_Symbol = \''.$code.'\'';
 				
 			$data = MSSql::getInstance()->query($sql);
 			if(!isset($data[0])){
-				$qtys[$pq] = 'not found';
+				$qtys[$code] = 'not found';
 				continue;
 			}
-		 	$qtys[$pq]['id'] = $data[0]['id'];
-		 	$qtys[$pq]['code'] = $data[0]['code'];
-		 	$qtys[$pq]['resevation'] = intval($data[0]['resevation']);
-		 	$qtys[$pq]['available'] = intval($data[0]['available']);
+		 	$qtys[$code]['id'] = $data[0]['id'];
+		 	$qtys[$code]['code'] = $data[0]['code'];
+		 	$qtys[$code]['resevation'] = intval($data[0]['resevation']);
+		 	$qtys[$code]['available'] = intval($data[0]['available']);
 		 	
 		}
 		return $qtys;
