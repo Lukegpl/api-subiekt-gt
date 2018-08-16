@@ -19,6 +19,7 @@ class Product extends SubiektObj{
 	protected $supplier_id = '';
 	protected $time_of_delivery = 0;
 	protected $id_store = 1;	
+	protected $products_qtys = array();
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
@@ -105,6 +106,27 @@ class Product extends SubiektObj{
 		return $data[0];	
 	}
 
+	public function getQtysByCode(){
+		$qtys = array();
+		foreach($this->products_qtys as $pq){
+		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available  FROM vwTowar LEFT JOIN 
+			tw_KodKreskowy ON kk_IdTowar = tw_Id 
+			WHERE st_MagId = '.intval($this->id_store).' AND tw_Symbol = \''.$pq.'\'';
+				
+			$data = MSSql::getInstance()->query($sql);
+			if(!isset($data[0])){
+				$qtys[$pq] = 'not found';
+				continue;
+			}
+		 	$qtys[$pq]['id'] = $data[0]['id'];
+		 	$qtys[$pq]['code'] = $data[0]['code'];
+		 	$qtys[$pq]['resevation'] = intval($data[0]['resevation']);
+		 	$qtys[$pq]['available'] = intval($data[0]['available']);
+		 	
+		}
+		return $qtys;
+	}
+
 	protected function getQty(){
 		$sql = "SELECT TOP 1 Rezerwacja,Dostepne FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = ".intval($this->id_store);		
 		$data = MSSql::getInstance()->query($sql);
@@ -133,10 +155,10 @@ class Product extends SubiektObj{
 		if(!$this->productGt){
 			return false;
 		}
-		$this->setGtObject();
+		$this->setGtObject();		
 		$this->productGt->Zapisz();
 		Logger::getInstance()->log('api','Zaktualizowano produkt: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
-		return true;
+		return $this;
 	}
 
 	public function getGt(){
