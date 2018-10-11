@@ -29,6 +29,7 @@ class Order extends SubiektObj {
 	protected $order_processing = false;
 
 
+
 	public function __construct($subiektGt,$orderDetail = array()){
 		parent::__construct($subiektGt, $orderDetail);
 		$this->excludeAttr(array('orderGt','orderDetail','pay_type','create_product_if_not_exists'));
@@ -56,7 +57,7 @@ class Order extends SubiektObj {
 		$code = sprintf('%s',$p_data['code']);
 
 		$position = $this->orderGt->Pozycje->Dodaj($code);
-		$position->IloscJm = $product['qty'];				
+		$position->IloscJm = intval($product['qty']);				
 		$position->WartoscBruttoPoRabacie  = floatval($product['price']) * intval($product['qty']);
 		if(floatval($product['price_before_discount'])>0){
 			$position->WartoscBruttoPrzedRabatem = floatval($product['price_before_discount']) * intval($product['qty']);
@@ -143,7 +144,9 @@ class Order extends SubiektObj {
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
 		return array(
 			'doc_ref' => $selling_doc->NumerPelny,
-			'doc_amount' => $this->getOrderAmountById($selling_doc->Identyfikator)
+			'doc_amount' => $this->getOrderAmountById($selling_doc->Identyfikator),
+			'doc_state' => 'ok',
+			'doc_state_code' => 0,
 
 		);
 		
