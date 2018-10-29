@@ -92,7 +92,8 @@ class Document extends SubiektObj {
 				 'fiscal_state' => $this->fiscal_state,
 				 'order_processing' => $this->order_processing,	
 				 'id_flag'	 	=> $this->id_flag,
-				 'flag_txt'		=> $this->flag_txt		 
+				 'flag_txt'		=> $this->flag_txt,
+				 'amount'		=> $this->amount	 
 				);
 	}
 
@@ -163,6 +164,14 @@ class Document extends SubiektObj {
 
 		$this->documentGt->Usun(false);	
 		return array('doc_ref'=>$this->doc_ref);
+	}
+
+	public function setFlag(){
+		if(!$this->is_exists){
+			return false;
+		}
+		$this->subiektGt->UstawFlageWlasna($this->orderGt->Identyfikator,$this->id_flag,"","");
+		return array('doc_ref'=>$this->doc_ref,'id_flag',$this->id_flag);
 	}
 
 	public function add(){	

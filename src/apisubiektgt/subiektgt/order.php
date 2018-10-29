@@ -220,6 +220,7 @@ class Order extends SubiektObj {
 				 'is_exists' => $this->is_exists,
 				 'state' => $this->state,				 
 				 'order_processing' => $this->order_processing,	
+				 'amount' => $this->amount
 				);
 	}
 
