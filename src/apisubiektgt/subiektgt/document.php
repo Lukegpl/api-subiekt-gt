@@ -170,7 +170,7 @@ class Document extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
-		$this->subiektGt->UstawFlageWlasna($this->orderGt->Identyfikator,$this->id_flag,"","");
+		$this->subiektGt->UstawFlageWlasna($this->documentGt->Identyfikator,$this->id_flag,"","");
 		return array('doc_ref'=>$this->doc_ref,'id_flag',$this->id_flag);
 	}
 

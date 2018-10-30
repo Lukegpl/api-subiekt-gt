@@ -27,6 +27,8 @@ class Order extends SubiektObj {
 	protected $create_product_if_not_exists = false;
 	protected $orderDetail= array();
 	protected $order_processing = false;
+	protected $id_flag = 0;
+	protected $flag_txt = '';
 
 
 
@@ -168,6 +170,8 @@ class Order extends SubiektObj {
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		$this->order_processing = $o['ss_PrzetworzonoZKwZD'];
+		$this->id_flag = $o['flg_Id'];
+		$this->flag_txt = $o['flg_Text'];
 		
 		$customer = Customer::getCustomerById($this->orderGt->KontrahentId);		
 		$this->customer = $customer;
@@ -191,7 +195,11 @@ class Order extends SubiektObj {
 	}
 
 	protected function getOrderById($id){
-		$sql = "SELECT * FROM vwDok4ZamGrid WHERE dok_Id = {$id}";		
+		$sql = "SELECT * FROM vwDok4ZamGrid 
+				LEFT JOIN fl_Wartosc as fw ON (fw.flw_IdObiektu = d.dok_Id)
+				LEFT JOIN fl__Flagi as f ON (f.flg_Id = fw.flw_IdFlagi)
+				WHERE dok_Id = {$id}
+		";		
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];
 	}
@@ -220,6 +228,8 @@ class Order extends SubiektObj {
 				 'is_exists' => $this->is_exists,
 				 'state' => $this->state,				 
 				 'order_processing' => $this->order_processing,	
+				 'id_flag'	 	=> $this->id_flag,
+				 'flag_txt'		=> $this->flag_txt,
 				 'amount' => $this->amount
 				);
 	}
@@ -276,5 +286,14 @@ class Order extends SubiektObj {
 	public function getGt(){
 		return $this->orderGt;	
 	}
+
+	public function setFlag(){
+		if(!$this->is_exists){
+			return false;
+		}
+		$this->subiektGt->UstawFlageWlasna($this->orderGt->Identyfikator,$this->id_flag,"","");
+		return array('order_ref'=>$this->order_ref,'id_flag',$this->id_flag);
+	}
+
 }
 ?>
