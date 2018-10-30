@@ -195,7 +195,7 @@ class Order extends SubiektObj {
 	}
 
 	protected function getOrderById($id){
-		$sql = "SELECT * FROM vwDok4ZamGrid 
+		$sql = "SELECT * FROM vwDok4ZamGrid  as d
 				LEFT JOIN fl_Wartosc as fw ON (fw.flw_IdObiektu = d.dok_Id)
 				LEFT JOIN fl__Flagi as f ON (f.flg_Id = fw.flw_IdFlagi)
 				WHERE dok_Id = {$id}
