@@ -101,7 +101,7 @@ class Order extends SubiektObj {
 	public function makeSaleDoc(){
 		if(!$this->is_exists){
 					return array(
-							'doc_ref' => $this->order_ref,
+							'order_ref' => $this->order_ref,
 							'doc_state' => 'warning',
 							'doc_state_code' => 1,
 							'message' => 'Nie odnaleziono dokumentu'
@@ -130,7 +130,7 @@ class Order extends SubiektObj {
 							'doc_ref' => $selling_doc->NumerPelny,
 							'doc_state' => 'warning',
 							'doc_state_code' => 2,
-							'message' => 'Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie.'
+							'message' => 'Nie można utworzyć dokumentu sprzedaży. Brakuje produktów na magazynie.',
 					);
 			}else{
 				throw new Exception('Nie można utworzyć dokumentu sprzedaży. Dokument: '.$this->order_ref.'. '.$this->toUtf8($e->getMessage()));
@@ -149,6 +149,7 @@ class Order extends SubiektObj {
 			'doc_amount' => $this->getOrderAmountById($selling_doc->Identyfikator),
 			'doc_state' => 'ok',
 			'doc_state_code' => 0,
+			'order_ref' => $this->order_ref,
 
 		);
 		
@@ -293,6 +294,15 @@ class Order extends SubiektObj {
 		}
 		$this->subiektGt->UstawFlageWlasna($this->orderGt->Identyfikator,$this->id_flag,"","");
 		return array('order_ref'=>$this->order_ref,'id_flag',$this->id_flag);
+	}
+
+	public function delete(){
+		if(!$this->orderGt){
+			return false;
+		}
+
+		$this->orderGt->Usun(false);	
+		return array('order_ref'=>$this->order_ref);
 	}
 
 }

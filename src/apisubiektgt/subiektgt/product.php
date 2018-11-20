@@ -121,7 +121,7 @@ class Product extends SubiektObj{
 	}
 
 	public function getListByStore(){
-		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];	
 	}
@@ -130,9 +130,10 @@ class Product extends SubiektObj{
 		$qtys = array();
 		foreach($this->products_qtys as $pq){
 		$code = $pq['code'];
-		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available  FROM vwTowar LEFT JOIN 
+		$id_store = isset($pq['id_store'])?intval($pq['id_store']):0;
+		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available, Stan as on_store   FROM vwTowar LEFT JOIN 
 			tw_KodKreskowy ON kk_IdTowar = tw_Id 
-			WHERE st_MagId = '.intval($pq['id_store']).' AND tw_Symbol = \''.$code.'\'';
+			WHERE st_MagId = '.$id_store.' AND tw_Symbol = \''.$code.'\'';
 				
 			$data = MSSql::getInstance()->query($sql);
 			if(!isset($data[0])){
@@ -143,13 +144,14 @@ class Product extends SubiektObj{
 		 	$qtys[$code]['code'] = $data[0]['code'];
 		 	$qtys[$code]['resevation'] = intval($data[0]['resevation']);
 		 	$qtys[$code]['available'] = intval($data[0]['available']);
+		 	$qtys[$code]['on_store'] = intval($data[0]['on_store']);
 		 	
 		}
 		return $qtys;
 	}
 
 	protected function getQty(){
-		$sql = "SELECT TOP 1 Rezerwacja,Dostepne FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = ".intval($this->id_store);		
+		$sql = "SELECT TOP 1 Rezerwacja,Dostepne,Stan  FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = ".intval($this->id_store);		
 		$data = MSSql::getInstance()->query($sql);
 		return $data[0];
 	}
