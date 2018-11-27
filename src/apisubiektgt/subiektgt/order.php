@@ -144,7 +144,7 @@ class Order extends SubiektObj {
 		$selling_doc->LiczonyOdCenBrutto = true;
 		$selling_doc->Zapisz();			
 		Logger::getInstance()->log('api','Utworzono dokument sprzedaży: '.$selling_doc->NumerPelny,__CLASS__.'->'.__FUNCTION__,__LINE__);
-		return array(
+		$response =  array(
 			'doc_ref' => $selling_doc->NumerPelny,
 			'doc_amount' => $this->getOrderAmountById($selling_doc->Identyfikator),
 			'doc_state' => 'ok',
@@ -152,7 +152,12 @@ class Order extends SubiektObj {
 			'order_ref' => $this->order_ref,
 
 		);
-		
+
+		if(isset($this->pdf_request)){
+			$response['doc_pdf'] = $this->getPdfInBase64($selling_doc);
+		}
+
+		return $response;
 	}
 
 	protected function getGtObject(){	
@@ -303,6 +308,16 @@ class Order extends SubiektObj {
 
 		$this->orderGt->Usun(false);	
 		return array('order_ref'=>$this->order_ref);
+	}
+
+	//get pdf file in base64 
+	protected function getPdfInBase64($gtObject){
+		$temp_dir = sys_get_temp_dir();
+		$file_name = $temp_dir.'/'.$gtObject->Identyfikator.'.pdf';
+		$gtObject->DrukujDoPliku($file_name,0);
+		$pdf_file = file_get_contents($file_name);
+		unlink($file_name);
+		return base64_encode($pdf_file);
 	}
 
 }

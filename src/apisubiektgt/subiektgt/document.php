@@ -68,6 +68,7 @@ class Document extends SubiektObj {
 			$file_name = $temp_dir.'/'.$this->gt_id.'.pdf';
 			$this->documentGt->DrukujDoPliku($file_name,0);
 			$pdf_file = file_get_contents($file_name);
+			unlink($file_name);
 			Logger::getInstance()->log('api','Wygenerowano pdf dokumentu: '.$this->doc_ref ,__CLASS__.'->'.__FUNCTION__,__LINE__);
 			return array('encoding'=>'base64',
 					 'doc_ref'=>$this->doc_ref,
