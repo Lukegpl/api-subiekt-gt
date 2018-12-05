@@ -17,37 +17,21 @@ class Document extends SubiektObj {
 	protected $comments;
 	protected $customer = array();	
 	protected $doc_ref = '';
-	protected $doc_type = 0;
 	protected $amount = 0;
 	protected $state = -1;
-	protected $date_of_delivery = '';		
+	protected $date_of_delivery = '';	
+	protected $doc_type = '';
+	protected $doc_type_id = 0;	
 	protected $documentDetail= array();
 	protected $order_processing = 0;
 	protected $id_flag = 0;
+	protected $id_gr_flag = 0;
 	protected $flag_txt = '';
-	protected $doc_types = array(1=>'FZ',
-						 2=>'FS',
-						 5=>'KFZ',
-						 6=>'KFS',
-						 9=>'MM',
-						10=> 'PZ',
-						11=>'WZ',
-						12=>'PW',
-						13=>'RW',
-						14=>'ZW',
-						15=>'ZD',
-						16=>'ZK',
-						21=>'PA',
-						29=>'IW',
-						35=>'ZPZ',
-						36=>'ZWZ',
-						62=>'FM',
-						);
+	
 
 	public function __construct($subiektGt,$documentDetail = array()){
 		parent::__construct($subiektGt, $documentDetail);
-		$this->excludeAttr(array('documentGt','documentDetail','doc_types'));		
-
+		$this->excludeAttr(array('documentGt','documentDetail','doc_types'));				
 		if($this->doc_ref!='' && $subiektGt->SuDokumentyManager->Istnieje($this->doc_ref)){
 			$this->documentGt = $subiektGt->SuDokumentyManager->Wczytaj($this->doc_ref);			
 			$this->getGtObject();
@@ -102,10 +86,11 @@ class Document extends SubiektObj {
 		if(!$this->documentGt){
 			return false;
 		}	
-		$this->gt_id = $this->documentGt->Identyfikator;
+		$this->gt_id = $this->documentGt->Identyfikator;		
 		$this->fiscal_state = $this->documentGt->StatusFiskalny;
 		$this->accounting_state = $this->documentGt->StatusKsiegowy;
 		$this->doc_type = $this->doc_types[$this->documentGt->Typ];
+		$this->doc_type_id = $this->documentGt->Typ;
 		
 		$o = $this->getDocumentById($this->gt_id);
 		
@@ -116,8 +101,11 @@ class Document extends SubiektObj {
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		$this->order_processing = $o['dok_PrzetworzonoZKwZD'];
-		$this->id_flag = $o['flg_Id'];
-		$this->flag_txt = $o['flg_Text'];
+		if(empty($this->id_flag)){
+			$this->id_flag = $o['flg_Id'];
+			$this->flag_txt = $o['flg_Text'];
+			$this->id_gr_flag = $o['flg_IdGrupy'];
+		}
 				
 		if(!is_null($this->documentGt->KontrahentId)){
 			$customer = Customer::getCustomerById($this->documentGt->KontrahentId);
@@ -171,8 +159,10 @@ class Document extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
-		$this->subiektGt->UstawFlageWlasna($this->documentGt->Identyfikator,$this->id_flag,"","");
-		return array('doc_ref'=>$this->doc_ref,'id_flag',$this->id_flag);
+		parent::flag($this->doc_type_id,$this->id_gr_flag,$this->id_flag,$this->flag_txt);
+		return array('doc_ref'=>$this->doc_ref,
+					 'id_flag'=>$this->id_flag,
+					 'id_gr_flag' => $this->id_gr_flag);
 	}
 
 	public function add(){	
