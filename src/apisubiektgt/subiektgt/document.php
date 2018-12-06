@@ -7,6 +7,7 @@ use APISubiektGT\MSSql;
 use APISubiektGT\SubiektGT\SubiektObj;
 use APISubiektGT\SubiektGT\Product;
 use APISubiektGT\SubiektGT\Customer;
+use APISubiektGT\Helper;
 
 class Document extends SubiektObj {
 	protected $documentGt;
@@ -24,9 +25,10 @@ class Document extends SubiektObj {
 	protected $doc_type_id = 0;	
 	protected $documentDetail= array();
 	protected $order_processing = 0;
-	protected $id_flag = 0;
-	protected $id_gr_flag = 0;
-	protected $flag_txt = '';
+	protected $id_flag = NULL;
+	protected $id_gr_flag = NULL;
+	protected $flag_name = '';
+	protected $flag_comment = '';
 	
 
 	public function __construct($subiektGt,$documentDetail = array()){
@@ -77,7 +79,8 @@ class Document extends SubiektObj {
 				 'fiscal_state' => $this->fiscal_state,
 				 'order_processing' => $this->order_processing,	
 				 'id_flag'	 	=> $this->id_flag,
-				 'flag_txt'		=> $this->flag_txt,
+				 'flag_name'	=> $this->flag_name,
+				 'flag_comment'		=> $this->flag_comment,
 				 'amount'		=> $this->amount	 
 				);
 	}
@@ -101,10 +104,11 @@ class Document extends SubiektObj {
 		$this->amount = $o['dok_WartBrutto'];
 		$this->date_of_delivery = $o['dok_TerminRealizacji'];
 		$this->order_processing = $o['dok_PrzetworzonoZKwZD'];
-		if(empty($this->id_flag)){
+		if(is_null($this->id_gr_flag)){
 			$this->id_flag = $o['flg_Id'];
-			$this->flag_txt = $o['flg_Text'];
+			$this->flag_name = $o['flg_Text'];
 			$this->id_gr_flag = $o['flg_IdGrupy'];
+			$this->flag_comment = $o['flw_Komentarz'];
 		}
 				
 		if(!is_null($this->documentGt->KontrahentId)){
@@ -159,9 +163,9 @@ class Document extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
-		parent::flag($this->doc_type_id,$this->id_gr_flag,$this->id_flag,$this->flag_txt);
-		return array('doc_ref'=>$this->doc_ref,
-					 'id_flag'=>$this->id_flag,
+		parent::flag(intval($this->id_gr_flag),$this->flag_name,'');
+		return array('doc_ref'=>$this->doc_ref,			
+					 'flag_name'=>$this->flag_name,
 					 'id_gr_flag' => $this->id_gr_flag);
 	}
 

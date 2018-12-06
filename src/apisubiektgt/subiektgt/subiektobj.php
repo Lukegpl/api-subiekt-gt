@@ -40,7 +40,7 @@ abstract class SubiektObj{
 		if(is_array($objDetail)){
 			foreach($objDetail as $key=>$value){
 				if(!is_array($value) && is_string($value)){
-					$this->{$key} = Helper::toWin($value);
+					$this->{$key} = Helper::toWin($value);				
 				}else{
 					$this->{$key} = $value;	
 				}
@@ -90,18 +90,8 @@ abstract class SubiektObj{
 	}
 
 
-	protected function flag($doc_type,$id_flag_group, $id_flag,$comment=''){
-		$DML = "
-			DECLARE	@return_value int
-			EXEC	@return_value = [dbo].[spFlaguj]
-					@IdGrupyFlag = {$id_flag_group},
-					@TypObiektu = {$doc_type},
-					@IdObiektu = {$this->gt_id},
-					@IdFlagi = {$id_flag},
-					@Komentarz = '{$comment}',
-					@IdUzytkownika = {$this->id_user};
-			";			
-			$data = MSSql::getInstance()->exec($DML);
+	protected function flag($id_gr_flag, $flag_name,$comment=''){
+		return $this->subiektGt->UstawFlageWlasna($id_gr_flag,$this->gt_id,$flag_name,$comment);
 	}
 	
 }
