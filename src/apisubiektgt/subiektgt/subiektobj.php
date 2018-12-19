@@ -4,6 +4,7 @@ namespace APISubiektGT\SubiektGT;
 use APISubiektGT\Logger;
 use APISubiektGT\SubiektGT;
 use APISubiektGT\Helper;
+use APISubiektGT\MSSql;
 
 abstract class SubiektObj{
 
@@ -11,15 +12,35 @@ abstract class SubiektObj{
 	protected $is_exists = false;
 	protected $gt_id = false;
 	protected $cfg = false;
+	protected $id_user = 1;
 	protected $exclude_attibs = array('subiektGt',
-							'exclude_attibs','cfg'
-							);	
+							'exclude_attibs','cfg','doc_types'
+							);
+		
+	protected $doc_types = array(1=>'FZ',
+						 2=>'FS',
+						 5=>'KFZ',
+						 6=>'KFS',
+						 9=>'MM',
+						10=> 'PZ',
+						11=>'WZ',
+						12=>'PW',
+						13=>'RW',
+						14=>'ZW',
+						15=>'ZD',
+						16=>'ZK',
+						21=>'PA',
+						29=>'IW',
+						35=>'ZPZ',
+						36=>'ZWZ',
+						62=>'FM',
+						);	
 
 	public function __construct($subiektGt, $objDetail = array()){
 		if(is_array($objDetail)){
 			foreach($objDetail as $key=>$value){
 				if(!is_array($value) && is_string($value)){
-					$this->{$key} = Helper::toWin($value);
+					$this->{$key} = Helper::toWin($value);				
 				}else{
 					$this->{$key} = $value;	
 				}
@@ -66,6 +87,11 @@ abstract class SubiektObj{
 
 	static public function toUtf8($value){
 		return Helper::toUtf8($value);
+	}
+
+
+	protected function flag($id_gr_flag, $flag_name,$comment=''){
+		return $this->subiektGt->UstawFlageWlasna($id_gr_flag,$this->gt_id,$flag_name,$comment);
 	}
 	
 }

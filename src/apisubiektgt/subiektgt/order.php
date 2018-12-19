@@ -168,6 +168,7 @@ class Order extends SubiektObj {
 		$o = $this->getOrderById($this->gt_id);
 		
 		$this->reference =  $o['dok_NrPelnyOryg'];
+		$this->doc_type = $this->doc_types[$this->orderGt->Typ];
 		$this->selling_doc = $o['pow_NrPelny'];
 		$this->comments = $o['dok_Uwagi'];
 		$this->order_ref = $o['dok_NrPelny'];
@@ -297,7 +298,7 @@ class Order extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
-		$this->subiektGt->UstawFlageWlasna($this->orderGt->Identyfikator,$this->id_flag,"","");
+		$this->subiektGt->UstawFlageWlasna($this->id_flag,$this->orderGt->Identyfikator,$this->flag_txt,"");
 		return array('order_ref'=>$this->order_ref,'id_flag',$this->id_flag);
 	}
 
