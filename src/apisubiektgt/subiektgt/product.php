@@ -103,7 +103,13 @@ class Product extends SubiektObj{
 	public function getListByStore(){
 		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
 		$data = MSSql::getInstance()->query($sql);
-		return $data[0];	
+		return $data;	
+	}
+
+	public function getListAviByStore(){
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store).' AND Dostepne > 0';
+		$data = MSSql::getInstance()->query($sql);
+		return $data;
 	}
 
 	public function getQtysByCode(){
