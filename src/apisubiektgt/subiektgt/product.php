@@ -19,6 +19,8 @@ class Product extends SubiektObj{
 	protected $supplier_id = '';
 	protected $time_of_delivery = 0;
 	protected $id_store = 1;	
+	protected $intrastat_country_id = 0;
+	protected $intrastat_code = NULL;
 	protected $products_qtys = array();
 
 	public function __construct($subiektGt,$productDetail = array()){		
@@ -65,6 +67,15 @@ class Product extends SubiektObj{
 		if(strlen($this->supplier_code)>0){
 			 $this->productGt->SymbolUDostawcy = substr(sprintf('%s',$this->supplier_code),0,20);
 		}
+
+		//intrastat
+		if(!empty($this->intrastat_code)){
+			$this->productGt->IntrastatKodWgCN = substr(sprintf('%s',$this->intrastat_code),0,8);
+		}
+		if(!empty($this->intrastat_country_id)){
+			$this->productGt->IntrastatKrajPochodzeniaId  = intval($this->intrastat_country_id);
+		}
+		//intrastat
 		$ean = sprintf('%d',trim($this->ean));
 		if(!$this->is_exists && $ean>0){
 			$this->productGt->KodyKreskowe->Dodaj($ean);
@@ -82,6 +93,8 @@ class Product extends SubiektObj{
 		$this->time_of_delivery = $this->productGt->CzasDostawy;
 		$this->supplier_id = $this->productGt->DostawcaId;
 		$this->supplier_code = $this->productGt->SymbolUDostawcy;
+		$this->intrastat_code = $this->productGt->IntrastatKodWgCN;
+		$this->intrastat_country_id = $this->productGt->IntrastatKrajPochodzeniaId;
 		if($this->productGt->KodyKreskowe->Liczba>0){
 			$this->ean = $this->productGt->KodyKreskowe->Element(1);
 		}
