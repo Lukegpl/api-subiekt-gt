@@ -22,6 +22,7 @@ class Product extends SubiektObj{
 	protected $intrastat_country_id = 0;
 	protected $intrastat_code = NULL;
 	protected $products_qtys = array();
+	protected $products_qtys_by_supplier = 0;
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
@@ -148,6 +149,19 @@ class Product extends SubiektObj{
 		}
 		return $qtys;
 	}
+
+
+	public function getQtysBySupplier(){		
+		$sql = "SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available, Stan as on_store, tc_CenaNetto1 as price1, tc_CenaNetto2 as price2, tc_CenaNetto3 as price3   FROM vwTowar LEFT JOIN 
+			tw_KodKreskowy ON kk_IdTowar = tw_Id 
+			WHERE tw_IdPodstDostawca = {$this->products_qtys_by_supplier} and Dostepne > 0";
+				
+			$data = MSSql::getInstance()->query($sql);
+	 	
+		
+		return $data;
+	}
+
 
 	protected function getQty(){
 		$sql = "SELECT TOP 1 Rezerwacja,Dostepne,Stan  FROM vwTowar WHERE tw_Id = {$this->gt_id} AND st_MagId = ".intval($this->id_store);		
