@@ -135,13 +135,13 @@ class Product extends SubiektObj{
 	}
 
 	public function getListByStore(){
-		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as reservation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
 		$data = MSSql::getInstance()->query($sql);
 		return $data;	
 	}
 
 	public function getListAviByStore(){
-		$sql = "SELECT tw_Symbol as code ,Rezerwacja as resevation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store).' AND Dostepne > 0';
+		$sql = "SELECT tw_Symbol as code ,Rezerwacja as reservation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store).' AND Dostepne > 0';
 		$data = MSSql::getInstance()->query($sql);
 		return $data;
 	}
@@ -151,7 +151,7 @@ class Product extends SubiektObj{
 		foreach($this->products_qtys as $pq){
 		$code = $pq['code'];
 		$id_store = isset($pq['id_store'])?intval($pq['id_store']):0;
-		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available, Stan as on_store   FROM vwTowar LEFT JOIN 
+		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as reservation , Dostepne as available, Stan as on_store   FROM vwTowar LEFT JOIN 
 			tw_KodKreskowy ON kk_IdTowar = tw_Id 
 			WHERE st_MagId = '.$id_store.' AND tw_Symbol = \''.$code.'\'';
 				
@@ -162,7 +162,7 @@ class Product extends SubiektObj{
 			}
 		 	$qtys[$code]['id'] = $data[0]['id'];
 		 	$qtys[$code]['code'] = $data[0]['code'];
-		 	$qtys[$code]['resevation'] = intval($data[0]['resevation']);
+		 	$qtys[$code]['reservation'] = intval($data[0]['reservation']);
 		 	$qtys[$code]['available'] = intval($data[0]['available']);
 		 	$qtys[$code]['on_store'] = intval($data[0]['on_store']);
 		 	
@@ -172,7 +172,7 @@ class Product extends SubiektObj{
 
 
 	public function getQtysBySupplier(){		
-		$sql = "SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as resevation , Dostepne as available, Stan as on_store, tc_CenaNetto1 as price1, tc_CenaNetto2 as price2, tc_CenaNetto3 as price3   FROM vwTowar LEFT JOIN 
+		$sql = "SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as reservation , Dostepne as available, Stan as on_store, tc_CenaNetto1 as price1, tc_CenaNetto2 as price2, tc_CenaNetto3 as price3   FROM vwTowar LEFT JOIN 
 			tw_KodKreskowy ON kk_IdTowar = tw_Id 
 			WHERE tw_IdPodstDostawca = {$this->products_qtys_by_supplier} and Dostepne > 0";
 				
