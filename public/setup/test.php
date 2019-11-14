@@ -67,7 +67,7 @@ if(Helper::getIsset('testdoc')){
     
 </head>
 <body>
-Wysłane rządanie:	
+Wysłane żądanie:	
 <pre>
 <code>
 <?php echo isset($json_request)?$api_url:'' ?>

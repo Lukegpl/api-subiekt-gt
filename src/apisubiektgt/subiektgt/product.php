@@ -112,7 +112,27 @@ class Product extends SubiektObj{
 		$this->qty = intval($qty['Dostepne']);
 		return true;
 	}
+	public function getPriceCalculations(){
+		if(!$this->productGt){
+			return false;
+		}
+		$this->setGtObject();
+		$this->productGt = $this->subiektGt->Towary->Wczytaj($this->code);
+		
 
+		Logger::getInstance()->log('api','Pobrano kalkulacje cen: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
+	
+		$priceList = $this->productGt->Zakupy;
+	
+		for ($i = 1, $size = $priceList->Liczba; $i<$size + 1; ++$i)
+		{
+			$data[$i]['nazwa'] = $priceList->Element($i)->Nazwa;
+			$data[$i]['wartosc'] = (string)$priceList->Element($i)->Wartosc;
+		}
+		
+
+		 return $data;
+	}
 
 	public function getListByStore(){
 		$sql = "SELECT tw_Symbol as code ,Rezerwacja as reservation,Dostepne as available, Stan as on_store,  st_MagId as id_store FROM vwTowar WHERE st_MagId = ".intval($this->id_store);
