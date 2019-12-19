@@ -237,7 +237,8 @@ class Order extends SubiektObj {
 				 'order_processing' => $this->order_processing,	
 				 'id_flag'	 	=> $this->id_flag,
 				 'flag_txt'		=> $this->flag_txt,
-				 'amount' => $this->amount
+				 'amount' => $this->amount,
+				 'sell_doc' =>$this->selling_doc
 				);
 	}
 
