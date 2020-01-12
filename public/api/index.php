@@ -88,6 +88,9 @@ try {
 
 	$json_response['state'] = 'success';
 	$json_response['data']	 = $result;
+	
+	$subiektGtCom->Zakoncz();
+	
 	Logger::getInstance()->log('api', 'Request finish: ' . $_SERVER['REMOTE_ADDR'], $class . '->' . $method, __LINE__);
 } catch (Exception $e) {
 	$json_response['state'] = 'fail';
