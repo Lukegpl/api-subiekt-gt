@@ -35,6 +35,7 @@ if (Helper::getIsset('save')) {
 	$cfg->setIdPerson(Helper::getValue('id_person'));
 	$cfg->setOperator(Helper::getValue('operator'));
 	$cfg->setOperatorPass(Helper::getValue('operator_password'));
+	$cfg->setWarehouse(Helper::getValue('id_warehouse'));
 	$cfg->save();
 }
 
@@ -54,6 +55,7 @@ try {
 	$cfg_values['id_person'] = $cfg->getIdPerson();
 	$cfg_values['operator'] = $cfg->getOperator();
 	$cfg_values['operator_password'] = $cfg->getOperatorPass();
+	$cfg_values['id_warehouse'] = $cfg->getWarehouse();
 	if (strlen($cfg->getAPIKey()) == 0) {
 		$cfg->newAPIKey();
 		$cfg->save();
@@ -205,6 +207,15 @@ foreach ($exts as $ex) {
 						<input class="u-full-width" name="operator_password" type="text" placeholder="123456" value="<?php echo  $cfg_values['operator_password']; ?>">
 					</div>
 				</div>
+				<div class="row">
+					<div class="one-half column">
+						<label for="dbpass">Id Magazynu domyślnego</label>
+						<input class="u-full-width" name="id_warehouse" type="text" placeholder="1" value="<?php echo  $cfg_values['id_warehouse']; ?>">
+					</div>
+					<div class="one-half column">
+					
+					</div>
+				</div>				
 				<div class="row">
 					<div class="one-half column">
 						<input class="button-primary" type="submit" value="Zapisz konfigurację" name="save">

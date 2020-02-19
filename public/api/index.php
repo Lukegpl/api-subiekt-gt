@@ -89,7 +89,8 @@ try {
 	$json_response['state'] = 'success';
 	$json_response['data']	 = $result;
 	
-	$subiektGtCom->Zakoncz();
+	//Zakomentowane aby nie zamykac bieżącego (uruchomionego) uchwytu do obiektu COM.
+	//$subiektGtCom->Zakoncz();
 	
 	Logger::getInstance()->log('api', 'Request finish: ' . $_SERVER['REMOTE_ADDR'], $class . '->' . $method, __LINE__);
 } catch (Exception $e) {
