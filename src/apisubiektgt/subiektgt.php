@@ -53,8 +53,9 @@ class SubiektGT
 		$gt->Baza = $this->cfg->getDatabase();
 		$gt->Operator = $this->cfg->getOperator();
 		$gt->OperatorHaslo = $gtD->Szyfruj($this->cfg->getOperatorPass());
-
 		$this->subiektGt = $gt->Uruchom(0, 4);
+
+		$this->subiektGt->MagazynId = intval($this->cfg->getWarehouse());
 		return $this->subiektGt;
 	}
 

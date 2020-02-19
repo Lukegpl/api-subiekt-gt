@@ -17,6 +17,7 @@ class Config
 	protected $id_person;
 	protected $operator;
 	protected $operator_password;
+	protected $id_warehouse;
 
 
 	/**
@@ -77,6 +78,7 @@ class Config
 	{
 		return $this->database;
 	}
+
 
 	/**
 	 *	Get db user name
@@ -207,6 +209,14 @@ class Config
 		$this->new_product_prefix = $new_product_prefix;
 	}
 
+	public function getWarehouse()
+	{
+		return $this->id_warehouse;
+	}
+
+	public function setWarehouse($id_warehouse){
+		$this->id_warehouse = $id_warehouse;
+	}
 
 	public function save()
 	{
