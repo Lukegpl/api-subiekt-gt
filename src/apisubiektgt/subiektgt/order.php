@@ -104,7 +104,8 @@ class Order extends SubiektObj {
 							'order_ref' => $this->order_ref,
 							'doc_state' => 'warning',
 							'doc_state_code' => 1,
-							'message' => 'Nie odnaleziono dokumentu'
+							'message' => 'Nie odnaleziono dokumentu',
+							'doc_ref' => false
 					);		
 		}
 		
