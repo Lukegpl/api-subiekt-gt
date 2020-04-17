@@ -13,6 +13,7 @@ abstract class SubiektObj{
 	protected $gt_id = false;
 	protected $cfg = false;
 	protected $id_user = 1;
+	protected $objDetail = false;
 	protected $exclude_attibs = array('subiektGt',
 							'exclude_attibs','cfg','doc_types'
 							);
@@ -37,6 +38,12 @@ abstract class SubiektObj{
 						);	
 
 	public function __construct($subiektGt, $objDetail = array()){
+		$this->readData($objDetail);
+		$this->subiektGt = $subiektGt;		
+	}
+	
+	protected function readData($objDetail){
+
 		if(is_array($objDetail)){
 			foreach($objDetail as $key=>$value){
 				if(!is_array($value) && is_string($value)){
@@ -45,10 +52,9 @@ abstract class SubiektObj{
 					$this->{$key} = $value;	
 				}
 			}
+			$this->objDetail = $objDetail;
 		}
-		$this->subiektGt = $subiektGt;		
-	}
-	
+	} 
 
 	protected function excludeAttr($name){
 		if(is_array($name)){
