@@ -13,20 +13,29 @@ class Product extends SubiektObj{
 	protected $code = '';
 	protected $price;
 	protected $wholesale_price = 0;
-	protected $name;	
+	protected $name;
+	protected $name_for_devices;
+	protected $description = '';	
 	protected $qty;	
 	protected $supplier_code = '';
 	protected $supplier_id = '';
+	protected $vat = 0;
+	//protected $unit = '';
+	protected $weight = 0;
+	protected $capacity = 0;
 	protected $time_of_delivery = 0;
+	protected $attribute = '';
 	protected $id_store = 1;	
 	protected $intrastat_country_id = 0;
 	protected $intrastat_code = NULL;
 	protected $products_qtys = array();
 	protected $products_qtys_by_supplier = 0;
+	protected $group_id = '';
+	protected $off_prefix = 0;
 
 	public function __construct($subiektGt,$productDetail = array()){		
 		parent::__construct($subiektGt, $productDetail);
-		$this->excludeAttr('productGt');
+		$this->excludeAttr(array('productGt','off_prefix','is_exists','objDetail'));
 		
 		if($this->code!='' &&  $subiektGt->Towary->Istnieje($this->code)){
 			$this->productGt = $subiektGt->Towary->Wczytaj($this->code);			
@@ -38,19 +47,29 @@ class Product extends SubiektObj{
 	protected function setGtObject(){				
 		if(!$this->is_exists){
 			$new_prefix = SubiektGT::getInstance()->getConfig()->getNewProductPrefix();
-			if(strlen($new_prefix)>0){				
+			if(strlen($new_prefix)>0 && $this->off_prefix == 0){				
 				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
 			}else{
 				$this->productGt->Nazwa = substr("{$this->name}",0,50);
+				
 			}
 		}else{
 			$this->productGt->Nazwa =  substr("{$this->name}",0,50);
 		}
-		$this->productGt->Opis = $this->name;
+		//Opis
+		if(!empty($this->description)){
+			$this->productGt->Opis = $this->description;
+		}else{
+			$this->productGt->Opis = $this->name;
+		}
+		//nazwa dla urzadzen
+		if(!empty($this->name_for_devices)){
+			$this->productGt->NazwaDlaUF = substr("{$this->name_for_devices}",0,50);
+		}
 		$this->productGt->Symbol = substr(sprintf('%s',$this->code),0,20);
 		$this->productGt->Aktywny = true;
 		$this->productGt->CzasDostawy = $this->time_of_delivery;
-		if($this->supplier_id != ''){
+		if(!empty($this->supplier_id)){
 			$this->productGt->DostawcaId = $this->supplier_id;
 		}
 		//cena detaliczna
@@ -63,9 +82,25 @@ class Product extends SubiektObj{
 			$this->productGt->Ceny->Element(2)->Netto = floatval($this->wholesale_price);			
 		}
 
+		//stawka vat
+		if(!empty($this->vat)){
+			$this->productGt->SprzedazVatId = $this->vat;
+		}
+		//masa
+		if(!empty($this->weight)){
+			$this->productGt->Masa = $this->weight;
+		}
 
+		//objetosc
+		if(!empty($this->capacity)){
+			$this->productGt->Objetosc = $this->capacity;
+		}
+		//flaga
+		if(!empty($this->attribute)){
+			$this->productGt->Cechy->Dodaj($this->attribute);
+		}
 
-		if(strlen($this->supplier_code)>0){
+		if(!empty($this->supplier_code)){
 			 $this->productGt->SymbolUDostawcy = substr(sprintf('%s',$this->supplier_code),0,20);
 		}
 
@@ -76,11 +111,11 @@ class Product extends SubiektObj{
 		if(!empty($this->intrastat_country_id)){
 			$this->productGt->IntrastatKrajPochodzeniaId  = intval($this->intrastat_country_id);
 		}
-		//intrastat
-		$ean = sprintf('%d',trim($this->ean));
-		if(!$this->is_exists && $ean>0){
-			$this->productGt->KodyKreskowe->Dodaj($ean);
-		}
+		//podstawowy kod kreskowy
+		$ean = substr(sprintf('%s',trim($this->ean)),0,20);
+		if(!empty($ean)){		
+			$this->productGt->KodyKreskowe->Podstawowy = $ean;
+ 		}
 		return true;
 	}
 
@@ -89,16 +124,19 @@ class Product extends SubiektObj{
 			return false;
 		}
 		$this->gt_id = $this->productGt->Identyfikator;
-		$this->name = $this->productGt->Nazwa;		
+		$this->name = $this->productGt->Nazwa;	
+		$this->description = $this->productGt->Opis;	
 		$this->code = $this->productGt->Symbol;
 		$this->time_of_delivery = $this->productGt->CzasDostawy;
 		$this->supplier_id = $this->productGt->DostawcaId;
+		$this->weight = $this->productGt->Masa;
+		$this->capacity = $this->productGt->Objetosc;
+		$this->vat = $this->productGt->SprzedazVatId;
 		$this->supplier_code = $this->productGt->SymbolUDostawcy;
 		$this->intrastat_code = $this->productGt->IntrastatKodWgCN;
-		$this->intrastat_country_id = $this->productGt->IntrastatKrajPochodzeniaId;
-		if($this->productGt->KodyKreskowe->Liczba>0){
-			$this->ean = $this->productGt->KodyKreskowe->Element(1);
-		}
+		$this->intrastat_country_id = $this->productGt->IntrastatKrajPochodzeniaId;		
+		$this->ean =$this->productGt->KodyKreskowe->Podstawowy;
+		
 		if($this->productGt->Ceny->Liczba>0){
 			$prices = $this->productGt->Ceny->Element(1);
 			$this->price = floatval($prices->Brutto);			
@@ -112,6 +150,7 @@ class Product extends SubiektObj{
 		$this->qty = intval($qty['Dostepne']);
 		return true;
 	}
+
 	public function getPriceCalculations(){
 		if(!$this->productGt){
 			return false;
@@ -211,6 +250,7 @@ class Product extends SubiektObj{
 		if(!$this->productGt){
 			return false;
 		}
+		$this->readData($this->objDetail);
 		$this->setGtObject();		
 		$this->productGt->Zapisz();
 		Logger::getInstance()->log('api','Zaktualizowano produkt: '.$this->productGt->Symbol,__CLASS__.'->'.__FUNCTION__,__LINE__);
