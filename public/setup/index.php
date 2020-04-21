@@ -199,6 +199,9 @@ foreach ($exts as $ex) {
 						<label for="newprefix">Domyślne dane osoby wystawiającego dokumenty</label>
 						<input class="u-full-width" name="id_person" type="text" placeholder="Jan Kowalski" value="<?php echo  $cfg_values['id_person']; ?>">
 					</div>
+					<div class="one-half column">
+						<label for="dbpass">Id domyślnej cechy dla nowego produktu</label>
+						<input class="u-full-width" name="id_default_attribute" type="text" placeholder="1" value="<?php echo  $cfg_values['id_default_attribute']; ?>">				</div>
 				</div>
 				<div class="row">
 					<div class="one-half column">
@@ -214,11 +217,6 @@ foreach ($exts as $ex) {
 					<div class="one-half column">
 						<label for="dbpass">Id Magazynu domyślnego</label>
 						<input class="u-full-width" name="id_warehouse" type="text" placeholder="1" value="<?php echo  $cfg_values['id_warehouse']; ?>">
-					</div>
-					<div class="one-half column">
-						<label for="dbpass">Id domyślnej cechy dla nowego produktu</label>
-						<input class="u-full-width" name="id_default_attribute" type="text" placeholder="1" value="<?php echo  $cfg_values['id_default_attribute']; ?>">
-					
 					</div>
 				</div>				
 				<div class="row">
