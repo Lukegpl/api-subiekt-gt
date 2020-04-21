@@ -47,11 +47,17 @@ class Product extends SubiektObj{
 	protected function setGtObject(){				
 		if(!$this->is_exists){
 			$new_prefix = SubiektGT::getInstance()->getConfig()->getNewProductPrefix();
+			
 			if(strlen($new_prefix)>0 && $this->off_prefix == 0){				
 				$this->productGt->Nazwa = substr("{$new_prefix} {$this->name}",0,50);
 			}else{
 				$this->productGt->Nazwa = substr("{$this->name}",0,50);
 				
+			}
+			//domyslny atrybut dla nowego produktu
+			$new_attribute = SubiektGT::getInstance()->getConfig()->getDefaultAttribute();
+			if(!empty($new_attribute)){
+				$this->productGt->Cechy->Dodaj($new_attribute);
 			}
 		}else{
 			$this->productGt->Nazwa =  substr("{$this->name}",0,50);
@@ -95,7 +101,7 @@ class Product extends SubiektObj{
 		if(!empty($this->capacity)){
 			$this->productGt->Objetosc = $this->capacity;
 		}
-		//flaga
+		//atrybut
 		if(!empty($this->attribute)){
 			$this->productGt->Cechy->Dodaj($this->attribute);
 		}
