@@ -18,6 +18,7 @@ class Config
 	protected $operator;
 	protected $operator_password;
 	protected $id_warehouse;
+	protected $id_default_attribute;
 
 
 	/**
@@ -216,6 +217,14 @@ class Config
 
 	public function setWarehouse($id_warehouse){
 		$this->id_warehouse = $id_warehouse;
+	}
+
+	public function setDefaultAttribute($id_attribute){
+		$this->id_default_attribute = $id_attribute;
+	}
+
+	public function getDefaultAttribute(){
+		return $this->id_default_attribute;
 	}
 
 	public function save()

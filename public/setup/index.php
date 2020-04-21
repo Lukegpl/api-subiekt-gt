@@ -14,6 +14,7 @@ $cfg_values = array(
 	'api_key' => '',
 	'operator' => '',
 	'operator_password' => '',
+	'id_default_attribute' => ''
 );
 
 $need_ex = array(
@@ -36,6 +37,7 @@ if (Helper::getIsset('save')) {
 	$cfg->setOperator(Helper::getValue('operator'));
 	$cfg->setOperatorPass(Helper::getValue('operator_password'));
 	$cfg->setWarehouse(Helper::getValue('id_warehouse'));
+	$cfg->setDefaultAttribute(Helper::getValue('id_default_attribute'));
 	$cfg->save();
 }
 
@@ -56,6 +58,7 @@ try {
 	$cfg_values['operator'] = $cfg->getOperator();
 	$cfg_values['operator_password'] = $cfg->getOperatorPass();
 	$cfg_values['id_warehouse'] = $cfg->getWarehouse();
+	$cfg_values['id_default_attribute'] = $cfg->getDefaultAttribute();
 	if (strlen($cfg->getAPIKey()) == 0) {
 		$cfg->newAPIKey();
 		$cfg->save();
@@ -213,6 +216,8 @@ foreach ($exts as $ex) {
 						<input class="u-full-width" name="id_warehouse" type="text" placeholder="1" value="<?php echo  $cfg_values['id_warehouse']; ?>">
 					</div>
 					<div class="one-half column">
+						<label for="dbpass">Id domyślnej cechy dla nowego produktu</label>
+						<input class="u-full-width" name="id_default_attribute" type="text" placeholder="1" value="<?php echo  $cfg_values['id_default_attribute']; ?>">
 					
 					</div>
 				</div>				
