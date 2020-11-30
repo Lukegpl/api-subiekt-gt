@@ -196,7 +196,7 @@ class Product extends SubiektObj{
 		foreach($this->products_qtys as $pq){
 		$code = $pq['code'];
 		$id_store = isset($pq['id_store'])?intval($pq['id_store']):0;
-		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as reservation , Dostepne as available, Stan as on_store, , Stan-Rezerwacja as on_store_available   FROM vwTowar LEFT JOIN 
+		$sql = 'SELECT tw_Id as id ,tw_Symbol as code, Rezerwacja as reservation , Dostepne as available, Stan as on_store, Stan-Rezerwacja as on_store_available   FROM vwTowar LEFT JOIN 
 			tw_KodKreskowy ON kk_IdTowar = tw_Id 
 			WHERE st_MagId = '.$id_store.' AND tw_Symbol = \''.$code.'\'';
 				
