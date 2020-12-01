@@ -210,6 +210,7 @@ class Product extends SubiektObj{
 		 	$qtys[$code]['reservation'] = intval($data[0]['reservation']);
 		 	$qtys[$code]['available'] = intval($data[0]['available']);
 		 	$qtys[$code]['on_store'] = intval($data[0]['on_store']);
+		 	$qtys[$code]['on_store_available'] = intval($data[0]['on_store_available']);
 		 	
 		}
 		return $qtys;
