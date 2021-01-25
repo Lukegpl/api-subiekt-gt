@@ -140,7 +140,7 @@ class Order extends SubiektObj {
 		if($this->customer['is_company']== false){
 			$selling_doc->RejestrujNaUF = true;
 		}
-		$selling_doc->Podtytul = $this->orderGt->Tytul;//.'/'.$this->orderGt->order_ref;
+		$selling_doc->Podtytul = trim($this->orderGt->Tytul);//.'/'.$this->orderGt->order_ref;
 		$selling_doc->Wystawil = Helper::toWin($this->cfg->getIdPerson());
 		$selling_doc->LiczonyOdCenBrutto = true;
 		$selling_doc->Zapisz();			
