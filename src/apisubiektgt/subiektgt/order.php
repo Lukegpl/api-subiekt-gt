@@ -300,8 +300,11 @@ class Order extends SubiektObj {
 		if(!$this->is_exists){
 			return false;
 		}
-		$this->subiektGt->UstawFlageWlasna($this->id_flag,$this->orderGt->Identyfikator,$this->flag_txt,"");
-		return array('order_ref'=>$this->order_ref,'id_flag',$this->id_flag);
+		//$this->subiektGt->UstawFlageWlasna($this->id_flag,$this->orderGt->Identyfikator,$this->flag_txt,"");
+		parent::flag(intval($this->id_gr_flag),$this->flag_name,'');
+		return array('order_ref'=>$this->order_ref,
+					 'flag_name'=>$this->flag_name,
+					 'id_gr_flag' => $this->id_gr_flag);
 	}
 
 	public function delete(){
