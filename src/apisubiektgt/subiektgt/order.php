@@ -81,6 +81,7 @@ class Order extends SubiektObj {
 			break;
 			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = floatval($this->amount); break;
 			case 'credit' : $this->orderGt->PlatnoscKredytKwota = floatval($this->amount); break;
+			case 'loan' : $this->orderGt->PlatnoscRatyKwota = floatval($this->amount); break;
 			default:
 					$this->orderGt->PlatnoscPrzelewKwota = floatval($this->amount);
 			break;
