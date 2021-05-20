@@ -75,10 +75,13 @@ class Order extends SubiektObj {
 		$this->orderGt->Rezerwacja = $this->reservation;		
 		$this->orderGt->NumerOryginalny = $this->reference;
 		switch($this->pay_type){
-			case 'transfer' : $this->orderGt->PlatnoscPrzelewKwota = floatval($this->amount); break;
+			case 'transfer' : 
+							  $this->orderGt->PlatnoscGotowkaKwota = 0;
+							  $this->orderGt->PlatnoscPrzelewKwota = floatval($this->amount);
+				 break;
 			case 'cart' : $this->orderGt->PlatnoscKartaKwota = floatval($this->amount); 
 						  $this->orderGt->PlatnoscKartaId = intval($this->pay_point_id);
-			break;
+				break;
 			case 'money' : $this->orderGt->PlatnoscGotowkaKwota = floatval($this->amount); break;
 			case 'credit' : $this->orderGt->PlatnoscKredytKwota = floatval($this->amount); break;
 			case 'loan' : $this->orderGt->PlatnoscRatyKwota = floatval($this->amount); break;
